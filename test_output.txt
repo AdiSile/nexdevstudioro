@@ -1,0 +1,61 @@
+FAIL src/__tests__/unit/components/ui/Input.test.tsx
+  ● Test suite failed to run
+
+    SyntaxError: C:\Users\Sile - Cataleya\Desktop\multi-agent-v2\workspace\NexusDevStudio\src\__tests__\unit\components\ui\Input.test.tsx: Unexpected token, expected "," (8:20)
+
+    [0m [90m  6 |[39m
+     [90m  7 |[39m [90m// ─── Helpers ────────────────────────────────────────────────────────[39m
+    [31m[1m>[22m[39m[90m  8 |[39m [36mconst[39m setup [33m=[39m (props[33m:[39m [33mReact[39m[33m.[39m[33mComponentProps[39m[33m<[39m[36mtypeof[39m [33mInput[39m[33m>[39m [33m=[39m {}) [33m=>[39m {
+     [90m    |[39m                     [31m[1m^[22m[39m
+     [90m  9 |[39m   [36mconst[39m user [33m=[39m userEvent[33m.[39msetup()[33m;[39m
+     [90m 10 |[39m   [36mconst[39m utils [33m=[39m render([33m<[39m[33mInput[39m {[33m...[39mprops} [33m/[39m[33m>[39m)[33m;[39m
+     [90m 11 |[39m   [36mconst[39m input [33m=[39m utils[33m.[39mcontainer[33m.[39mquerySelector([32m"input"[39m)[33m![39m[33m;[39m[0m
+
+      at constructor (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parse-error.ts:95:45)
+      at Parser.toParseError [as raise] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/tokenizer/index.ts:1504:19)
+      at Parser.raise [as unexpected] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/tokenizer/index.ts:1544:16)
+      at Parser.unexpected [as expect] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/util.ts:157:12)
+      at Parser.expect [as parseParenAndDistinguishExpression] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/expression.ts:1801:14)
+      at Parser.parseParenAndDistinguishExpression [as parseExprAtom] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/expression.ts:1170:21)
+      at Parser.parseExprAtom [as parseExprSubscripts] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/expression.ts:742:23)
+      at Parser.parseExprSubscripts [as parseUpdate] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/expression.ts:721:21)
+      at Parser.parseUpdate [as parseMaybeUnary] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/expression.ts:683:23)
+      at Parser.parseMaybeUnary [as parseMaybeUnaryOrPrivate] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/expression.ts:417:14)
+      at Parser.parseMaybeUnaryOrPrivate [as parseExprOps] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/expression.ts:429:23)
+      at Parser.parseExprOps [as parseMaybeConditional] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/expression.ts:384:23)
+      at Parser.parseMaybeConditional [as parseMaybeAssign] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/expression.ts:301:21)
+      at parseMaybeAssign (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/expression.ts:257:12)
+      at Parser.callback [as allowInAnd] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/expression.ts:3192:16)
+      at Parser.allowInAnd [as parseMaybeAssignAllowIn] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/expression.ts:256:17)
+      at Parser.parseMaybeAssignAllowIn [as parseVar] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/statement.ts:1587:18)
+      at Parser.parseVar [as parseVarStatement] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/statement.ts:1251:10)
+      at Parser.parseVarStatement [as parseStatementContent] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/statement.ts:612:21)
+      at Parser.parseStatementContent [as parseStatementLike] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/statement.ts:482:17)
+      at Parser.parseStatementLike [as parseModuleItem] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/statement.ts:419:17)
+      at Parser.parseModuleItem [as parseBlockOrModuleBlockBody] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/statement.ts:1443:16)
+      at Parser.parseBlockOrModuleBlockBody [as parseBlockBody] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/statement.ts:1417:10)
+      at Parser.parseBlockBody [as parseProgram] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/statement.ts:229:10)
+      at Parser.parseProgram [as parseTopLevel] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/statement.ts:203:25)
+      at Parser.parseTopLevel [as parse] (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/parser/index.ts:83:25)
+      at parse (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/parser/src/index.ts:86:38)
+      at parser (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/core/src/parser/index.ts:29:19)
+          at parser.next (<anonymous>)
+      at normalizeFile (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/core/src/transformation/normalize-file.ts:49:24)
+          at normalizeFile.next (<anonymous>)
+      at run (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/core/src/transformation/index.ts:41:36)
+          at run.next (<anonymous>)
+      at transform (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/core/src/transform.ts:29:20)
+          at transform.next (<anonymous>)
+      at evaluateSync (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/gensync/index.js:251:28)
+      at sync (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/gensync/index.js:89:14)
+      at fn (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/core/src/errors/rewrite-stack-trace.ts:99:14)
+      at transformSync (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@babel/core/src/transform.ts:66:52)
+      at ScriptTransformer.transformSource (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@jest/transform/build/index.js:415:31)
+      at ScriptTransformer._transformAndBuildScript (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@jest/transform/build/index.js:512:40)
+      at ScriptTransformer.transform (../../../../AppData/Local/npm-cache/_npx/b8d86e6551a4f492/node_modules/@jest/transform/build/index.js:551:19)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.658 s
+Ran all test suites matching Input.test.
