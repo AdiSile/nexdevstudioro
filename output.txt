@@ -1,0 +1,128 @@
+Prisma schema loaded from prisma\schema.prisma.
+
+Error: Prisma schema validation - (validate wasm)
+Error code: P1012
+[1;91merror[0m: [1mError validating field `webhooks` in model `Organization`: The relation field `webhooks` on model `Organization` is missing an opposite relation field on the model `Webhook`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:265[0m
+[1;94m   | [0m
+[1;94m264 | [0m  apiKeys       ApiKey[]
+[1;94m265 | [0m  [1;91mwebhooks      Webhook[][0m
+[1;94m266 | [0m  featureFlags  FeatureFlag[]
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `analyticsEvents` in model `Organization`: The relation field `analyticsEvents` on model `Organization` is missing an opposite relation field on the model `AnalyticsEvent`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:273[0m
+[1;94m   | [0m
+[1;94m272 | [0m  aiDocuments   AIDocument[]
+[1;94m273 | [0m  [1;91manalyticsEvents AnalyticsEvent[][0m
+[1;94m274 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `organization` in model `Team`: The relation field `organization` on model `Team` is missing an opposite relation field on the model `Organization`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:357[0m
+[1;94m   | [0m
+[1;94m356 | [0m  organizationId String       @map("organization_id") @db.Uuid
+[1;94m357 | [0m  [1;91morganization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)[0m
+[1;94m358 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `user` in model `TeamMember`: The relation field `user` on model `TeamMember` is missing an opposite relation field on the model `User`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:373[0m
+[1;94m   | [0m
+[1;94m372 | [0m  userId    String   @map("user_id") @db.Uuid
+[1;94m373 | [0m  [1;91muser      User     @relation(fields: [userId], references: [id], onDelete: Cascade)[0m
+[1;94m374 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `manager` in model `Project`: The relation field `manager` on model `Project` is missing an opposite relation field on the model `User`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:404[0m
+[1;94m   | [0m
+[1;94m403 | [0m  managerId       String?      @map("manager_id") @db.Uuid
+[1;94m404 | [0m  [1;91mmanager         User?        @relation(fields: [managerId], references: [id], onDelete: SetNull)[0m
+[1;94m405 | [0m  clientId        String?      @map("client_id") @db.Uuid
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `user` in model `TimeEntry`: The relation field `user` on model `TimeEntry` is missing an opposite relation field on the model `User`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:501[0m
+[1;94m   | [0m
+[1;94m500 | [0m  userId      String   @map("user_id") @db.Uuid
+[1;94m501 | [0m  [1;91muser        User     @relation(fields: [userId], references: [id], onDelete: Cascade)[0m
+[1;94m502 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `project` in model `Invoice`: The relation field `project` on model `Invoice` is missing an opposite relation field on the model `Project`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:655[0m
+[1;94m   | [0m
+[1;94m654 | [0m  projectId      String?      @map("project_id") @db.Uuid
+[1;94m655 | [0m  [1;91mproject        Project?     @relation(fields: [projectId], references: [id], onDelete: SetNull)[0m
+[1;94m656 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `user` in model `ProductReview`: The relation field `user` on model `ProductReview` is missing an opposite relation field on the model `User`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:808[0m
+[1;94m   | [0m
+[1;94m807 | [0m  userId      String?  @map("user_id") @db.Uuid
+[1;94m808 | [0m  [1;91muser        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)[0m
+[1;94m809 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `product` in model `ProductImage`: The relation field `product` on model `ProductImage` is missing an opposite relation field on the model `Product`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:827[0m
+[1;94m   | [0m
+[1;94m826 | [0m  productId   String   @map("product_id") @db.Uuid
+[1;94m827 | [0m  [1;91mproduct     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)[0m
+[1;94m828 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `bundle` in model `BundleProduct`: The relation field `bundle` on model `BundleProduct` is missing an opposite relation field on the model `Product`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:842[0m
+[1;94m   | [0m
+[1;94m841 | [0m  product     Product  @relation("BundleProducts", fields: [productId], references: [id], onDelete: Cascade)
+[1;94m842 | [0m  [1;91mbundle      Product  @relation("BundleParent", fields: [bundleId], references: [id], onDelete: Cascade)[0m
+[1;94m843 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `attribute` in model `OrderItemAttribute`: The relation field `attribute` on model `OrderItemAttribute` is missing an opposite relation field on the model `ProductAttribute`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:914[0m
+[1;94m   | [0m
+[1;94m913 | [0m  item         OrderItem           @relation(fields: [itemId], references: [id], onDelete: Cascade)
+[1;94m914 | [0m  [1;91mattribute    ProductAttribute    @relation(fields: [attributeId], references: [id], onDelete: Cascade)[0m
+[1;94m915 | [0m  valueObj     ProductAttributeValue? @relation(fields: [valueId], references: [id], onDelete: SetNull, map: "fk_order_item_attr_value")
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `valueObj` in model `OrderItemAttribute`: The relation field `valueObj` on model `OrderItemAttribute` is missing an opposite relation field on the model `ProductAttributeValue`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:915[0m
+[1;94m   | [0m
+[1;94m914 | [0m  attribute    ProductAttribute    @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+[1;94m915 | [0m  [1;91mvalueObj     ProductAttributeValue? @relation(fields: [valueId], references: [id], onDelete: SetNull, map: "fk_order_item_attr_value")[0m
+[1;94m916 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `user` in model `CartItem`: The relation field `user` on model `CartItem` is missing an opposite relation field on the model `User`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:933[0m
+[1;94m   | [0m
+[1;94m932 | [0m  userId    String?  @map("user_id") @db.Uuid
+[1;94m933 | [0m  [1;91muser      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)[0m
+[1;94m934 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `user` in model `Order`: The relation field `user` on model `Order` is missing an opposite relation field on the model `User`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:961[0m
+[1;94m   | [0m
+[1;94m960 | [0m  userId          String?      @map("user_id") @db.Uuid
+[1;94m961 | [0m  [1;91muser            User?        @relation(fields: [userId], references: [id], onDelete: SetNull)[0m
+[1;94m962 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `user` in model `ApiKey`: The relation field `user` on model `ApiKey` is missing an opposite relation field on the model `User`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:1592[0m
+[1;94m   | [0m
+[1;94m1591 | [0m  userId         String?      @map("user_id") @db.Uuid
+[1;94m1592 | [0m  [1;91muser           User?        @relation(fields: [userId], references: [id], onDelete: SetNull)[0m
+[1;94m1593 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `tag` in model `EntityTag`: The relation field `tag` on model `EntityTag` is missing an opposite relation field on the model `Tag`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:1825[0m
+[1;94m   | [0m
+[1;94m1824 | [0m  tagId           String   @map("tag_id") @db.Uuid
+[1;94m1825 | [0m  [1;91mtag             Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)[0m
+[1;94m1826 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `valueObj` in model `ProductVariantAttribute`: The relation field `valueObj` on model `ProductVariantAttribute` is missing an opposite relation field on the model `ProductAttributeValue`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mprisma\schema.prisma:1952[0m
+[1;94m   | [0m
+[1;94m1951 | [0m  attribute   ProductAttribute       @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+[1;94m1952 | [0m  [1;91mvalueObj    ProductAttributeValue? @relation(fields: [valueId], references: [id], onDelete: SetNull, map: "fk_variant_attr_value")[0m
+[1;94m1953 | [0m
+[1;94m   | [0m
+
+Validation Error Count: 17
+[Context: validate]
+
+Prisma CLI Version : 7.8.0
