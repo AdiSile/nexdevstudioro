@@ -23,7 +23,6 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
-  LayoutDashboard,
   Image,
   Briefcase,
   ListOrdered,
