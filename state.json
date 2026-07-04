@@ -214,6 +214,21 @@
       "role": "assistant",
       "content": "✅ Pas 1 (tdd-guide): 1 fișiere salvate.\n✅ Pas 2 (tdd-guide): 1 fișiere salvate.\n✅ Pas 3 (tdd-guide): 1 fișiere salvate.\n✅ Pas 4 (tdd-guide): 1 fișiere salvate.\n✅ Pas 5 (tdd-guide): 0 fișiere salvate.\n✅ Pas 6 (tdd-guide): 1 fișiere salvate.\n✅ Pas 7 (build-error-resolver): 0 fișiere salvate.",
       "timestamp": 1783177189.5882304
+    },
+    {
+      "role": "user",
+      "content": "Repară cele 3 erori de validare din `prisma/schema.prisma`. Adaugă câmpurile de relație inversă care lipsesc pe modelele specificate mai jos. După modificări, rulează `npx prisma validate` și asigură-te că trece fără erori.  1. Pe modelul `User`, adaugă:    workspaces Workspace[]  2. Pe modelul `Task`, adaugă:    notifications Notification[]  3. Pe modelul `ProductAttribute`, adaugă:    orderItemAttributes OrderItemAttribute[]  4. În `package.json`, verifică să existe `\"engines\": { \"node\": \"20.x\" }`.  Returnează fișierele modificate.",
+      "timestamp": 1783178743.4100218
+    },
+    {
+      "role": "system",
+      "content": "🚀 Proiect pornit: Proiect: NexusDevStudio",
+      "timestamp": 1783178743.4315517
+    },
+    {
+      "role": "assistant",
+      "content": "✅ Pas 1 (tdd-guide): 1 fișiere salvate.\n✅ Pas 2 (tdd-guide): 1 fișiere salvate.\n✅ Pas 3 (tdd-guide): 1 fișiere salvate.\n✅ Pas 4 (tdd-guide): 1 fișiere salvate.\n✅ Pas 5 (tdd-guide): 1 fișiere salvate.",
+      "timestamp": 1783178963.5239453
     }
   ],
   "cerinta": "NexusDevStudio.ro Enterprise AI-Powered Digital Platform  API-First  Modular Monolith (prepared for Microservices)  Multi-Tenant Ready  Headless CMS  Responsive  SEO Optimized  PWA Ready  Cloud Native  Scalable  Event Driven    ────────────────────────────────────────    ARCHITECTURE    Frontend  ├── Landing Website  ├── Client Portal  ├── Customer Dashboard  ├── Admin Dashboard  ├── AI Workspace  ├── Shop  ├── Blog  ├── Events  ├── Portfolio  ├── Knowledge Base  ├── Contact Center    Backend  ├── REST API  ├── GraphQL API  ├── WebSocket Gateway  ├── Authentication Service  ├── Authorization Service  ├── Business Logic  ├── AI Gateway  ├── Payment Gateway  ├── Notification Gateway  ├── File Management  ├── Automation Engine  ├── Scheduler  ├── Audit System  ├── Logging  ├── Monitoring    Infrastructure  ├── PostgreSQL  ├── Redis  ├── Object Storage  ├── CDN  ├── Queue System  ├── Search Engine  ├── Cache Layer  ├── Backup System    ────────────────────────────────────────    CORE MODULES    Core  Authentication  Authorization  Users  Roles  Permissions  Organizations  Teams  Clients  CRM  Projects  Tasks  Calendar  Messaging  Notifications  Settings  Audit Logs  Activity Logs  API Keys  Webhooks    ────────────────────────────────────────    CMS    Pages  Dynamic Sections  Navigation  Menus  Footer  Blocks  Widgets  Media Library  Forms  FAQ  Testimonials  Partners  Reviews  Announcements  Popup Manager  SEO Manager  Redirect Manager  Sitemap  Robots  Localization  Translations    ────────────────────────────────────────    CONTENT    Blog  Categories  Tags  Authors  Drafts  Publishing  Scheduled Posts  Rich Editor  Comments  Search  Documentation  Knowledge Base  Case Studies  Portfolio    ────────────────────────────────────────    SERVICES    Categories  Services  Pricing  Packages  Subscriptions  Custom Quotes  Bookings  Consultations  Service Requests    ────────────────────────────────────────    SHOP    Categories  Products  Variants  Attributes  Inventory  Stock  Suppliers  Brands  Orders  Invoices  Coupons  Gift Cards  Discounts  Taxes  Shipping  Returns  Wishlists  Reviews  Recommendations  Cross Sell  Upsell  Digital Products  Licenses    ────────────────────────────────────────    CLIENT AREA    Dashboard  Projects  Invoices  Payments  Orders  Tickets  Files  Contracts  Messages  Notifications  Appointments  Downloads  AI Credits  Usage Statistics    ────────────────────────────────────────    EVENTS    Categories  Events  Registrations  Tickets  Speakers  Agenda  Sponsors  Gallery  Live Streams  Certificates    ────────────────────────────────────────    AI PLATFORM    AI Chat  AI Agents  AI Assistants  Prompt Library  Prompt Templates  Knowledge Base  RAG  Embeddings  Vector Database  OCR  Speech To Text  Text To Speech  Image Generation  Video Generation  Code Generation  Document Analysis  Translation  Summarization  SEO Generator  Marketing Generator  Workflow Builder  AI Automation  AI Analytics  Model Management  Provider Management  Usage Tracking  Token Monitoring    ────────────────────────────────────────    AUTOMATION    Workflow Engine  Triggers  Conditions  Actions  Email Automation  SMS Automation  WhatsApp Automation  Webhook Automation  Scheduled Jobs  Background Jobs  Queue Processing    ────────────────────────────────────────    COMMUNICATION    Inbox  Support Tickets  Live Chat  Chatbot  Email  SMS  Push Notifications  WhatsApp  Internal Messaging    ────────────────────────────────────────    PAYMENTS    Stripe  PayPal  Crypto  Bank Transfer  Subscriptions  Recurring Payments  Invoices  Refunds  Taxes  Accounting Integration    ────────────────────────────────────────    ADMIN    Dashboard  Users  Roles  Permissions  CMS  Content  Services  Products  Orders  Events  AI  CRM  Analytics  Reports  System Settings  API Management  Integrations  Feature Flags  Maintenance Mode    ────────────────────────────────────────    ANALYTICS    Visitors  Sessions  Conversions  Funnels  Sales  Revenue  Orders  User Activity  Heatmaps  Performance  AI Usage  System Health  Business Intelligence    ────────────────────────────────────────    SECURITY    JWT  OAuth2  SSO  2FA  RBAC  ABAC  Session Management  Rate Limiting  CSRF Protection  XSS Protection  SQL Injection Protection  Encryption  Secrets Management  Audit Trail  IP Restrictions  Device Management    ────────────────────────────────────────    SEARCH    Global Search  Instant Search  Full Text Search  Filters  Faceted Search  AI Semantic Search    ────────────────────────────────────────    FILES    Media Library  Images  Videos  Documents  Versioning  CDN  Optimization  Compression    ────────────────────────────────────────    SEO    Meta Manager  OpenGraph  Schema.org  Canonical URLs  Dynamic Sitemap  Robots.txt  Breadcrumbs  Structured Data  Performance Optimization    ────────────────────────────────────────    INTEGRATIONS    Google  Microsoft  GitHub  GitLab  Discord  Slack  Telegram  WhatsApp  Stripe  PayPal  Cloudflare  OpenAI  Anthropic  Google Gemini  xAI  DeepSeek  Mistral  AWS  Azure  Cloudflare R2  Supabase  Firebase    ────────────────────────────────────────    SYSTEM    Feature Flags  Environment Manager  Configuration Manager  Health Checks  Error Tracking  Logging  Monitoring  Metrics  Alerts  Backups  Restore  Migration Manager    ────────────────────────────────────────    DESIGN SYSTEM    Dark Mode  Light Mode  Theme Manager  Component Library  Responsive Layout  Accessibility (WCAG AA)  Animations  Micro Interactions    ────────────────────────────────────────    TECHNICAL REQUIREMENTS    API First  Headless Architecture  Server Side Rendering  Static Generation  Edge Rendering  Real-Time Updates  Offline Support  Progressive Web App  Docker Ready  Kubernetes Ready  Horizontal Scaling  Vertical Scaling  CI/CD Ready  High Availability  Disaster Recovery  Enterprise Grade  Production Ready  Future Proof",
@@ -931,18 +946,48 @@
       "desc": "Fișier: prisma/schema.prisma\nRulează `npx prisma validate` și repară orice erori rămase pentru a trece validarea.\n\nSkill-uri relevante:\nSkill: accessibility\n# Accessibility (WCAG 2.2)\n\nThis skill ensures that digital interfaces are Perceivable, Operable, Understandable, and Robust (POUR) for all users, including those using screen readers, switch controls, or keyboard navigation. It focuses on the technical implementation of WCAG 2.2 success criteria.\n\n\n\nSkill: agent-architecture-audit\n# Agent Architecture Audit\n\nA diagnostic workflow for agent systems that hide failures behind wrapper layers, stale memory, retry loops, or transport/rendering mutations.\n\n## When to Activate\n\n**MANDATORY for:**\n- Releasing any agent or LLM-powered application to production\n- Shipping features with \n\nSkill: agent-eval\n# Agent Eval Skill\n\nA lightweight CLI tool for comparing coding agents head-to-head on reproducible tasks. Every \"which coding agent is best?\" comparison runs on vibes — this tool systematizes it.\n\n## When to Activate\n\n- Comparing coding agents (Claude Code, Aider, Codex, etc.) on your own codebase\n\n\nReguli:\n---\npaths:\n  - \"**/*.component.ts\"\n  - \"**/*.component.html\"\n  - \"**/*.service.ts\"\n  - \"**/*.directive.ts\"\n  - \"**/*.pipe.ts\"\n  - \"**/*.guard.ts\"\n  - \"**/*.resolver.ts\"\n  - \"**/*.module.ts\"\n---\n# Angular Coding Style\n> This file extends [common/coding-style.md](../common/coding-style.md) with Angular specific content.\nAlways check the project's Angular version before writing code — features differ significantly between versions. Run `ng version` or inspect `package.json`. When creating a new project, do not pin a version unless the user specifies one.\n---\npaths:\n  - \"**/*.ets\"\n  - \"**/*.ts\"\n  - \"**/module.json5\"\n  - \"**/oh-package.json5\"\n  - \"**/build-profile.json5\"\n---\n# HarmonyOS / ArkTS Coding Style\n> This file extends [common/coding-style.md](../common/coding-style.md) with HarmonyOS and ArkTS-specific content.\n## ArkTS Language Constraints\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
       "agent": "build-error-resolver",
       "status": "pending"
+    },
+    {
+      "id": "e134eaf0",
+      "desc": "Fișier: prisma/schema.prisma\nAdaugă câmpul `workspaces Workspace[]` în modelul `User`.\n\nSkill-uri relevante:\nSkill: google-workspace-ops\n# Google Workspace Ops\n\nThis skill is for operating shared docs, spreadsheets, and decks as working systems, not just editing one file in isolation.\n\n## When to Use\n\n- User needs to find a doc, sheet, or deck and update it in place\n- Consolidating plans, trackers, notes, or customer lists stored in \n\nSkill: prisma-patterns\n# Prisma Patterns\n\nProduction patterns and non-obvious traps for Prisma ORM in TypeScript backends.\nTested against Prisma 5.x and 6.x. Some behaviors differ from Prisma 4.\n\nCheck the Prisma version before applying version-specific patterns:\n\n```bash\nnpx prisma --version\n```\n\nPrisma 5 introduced `rel\n\nSkill: workspace-surface-audit\n# Workspace Surface Audit\n\nRead-only audit skill for answering the question \"what can this workspace and machine actually do right now, and what should we add or enable next?\"\n\nThis is the ECC-native answer to setup-audit plugins. It does not modify files unless the user explicitly asks for follow-u\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "959586ad",
+      "desc": "Fișier: prisma/schema.prisma\nAdaugă câmpul `notifications Notification[]` în modelul `Task`.\n\nSkill-uri relevante:\nSkill: prisma-patterns\n# Prisma Patterns\n\nProduction patterns and non-obvious traps for Prisma ORM in TypeScript backends.\nTested against Prisma 5.x and 6.x. Some behaviors differ from Prisma 4.\n\nCheck the Prisma version before applying version-specific patterns:\n\n```bash\nnpx prisma --version\n```\n\nPrisma 5 introduced `rel\n\nSkill: unified-notifications-ops\n# Unified Notifications Ops\n\nUse this skill when the real problem is not a missing ping. The real problem is a fragmented notification system.\n\nThe job is to turn scattered events into one operator surface with:\n- clear severity\n- clear ownership\n- clear routing\n- clear follow-up action\n\n## When to \n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "3745b733",
+      "desc": "Fișier: prisma/schema.prisma\nAdaugă câmpul `orderItemAttributes OrderItemAttribute[]` în modelul `ProductAttribute`.\n\nSkill-uri relevante:\nSkill: prisma-patterns\n# Prisma Patterns\n\nProduction patterns and non-obvious traps for Prisma ORM in TypeScript backends.\nTested against Prisma 5.x and 6.x. Some behaviors differ from Prisma 4.\n\nCheck the Prisma version before applying version-specific patterns:\n\n```bash\nnpx prisma --version\n```\n\nPrisma 5 introduced `rel\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "2209582d",
+      "desc": "Fișier: prisma/schema.prisma\nRulează `npx prisma validate` pentru verificare.\n\nSkill-uri relevante:\nSkill: prisma-patterns\n# Prisma Patterns\n\nProduction patterns and non-obvious traps for Prisma ORM in TypeScript backends.\nTested against Prisma 5.x and 6.x. Some behaviors differ from Prisma 4.\n\nCheck the Prisma version before applying version-specific patterns:\n\n```bash\nnpx prisma --version\n```\n\nPrisma 5 introduced `rel\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "996fa51e",
+      "desc": "Fișier: package.json\nAdaugă `\"engines\": { \"node\": \"20.x\" }` dacă lipsește.\n\nSkill-uri relevante:\nSkill: agent-payment-x402\n# Agent Payment Execution (x402)\n\nEnable AI agents to make policy-gated payments with built-in spending controls. Uses the x402 HTTP payment protocol and MCP tools so agents can pay for external services, APIs, or other agents without custodial risk.\n\n## When to Use\n\nUse when: your agent needs to pa\n\nSkill: context-budget\n# Context Budget\n\nAnalyze token overhead across every loaded component in a Claude Code session and surface actionable optimizations to reclaim context space.\n\n## When to Use\n\n- Session performance feels sluggish or output quality is degrading\n- You've recently added many skills, agents, or MCP serv\n\nSkill: dmux-workflows\n# dmux Workflows\n\nOrchestrate parallel AI agent sessions using dmux, a tmux pane manager for agent harnesses.\n\n## When to Activate\n\n- Running multiple agent sessions in parallel\n- Coordinating work across Claude Code, Codex, and other harnesses\n- Complex tasks that benefit from divide-and-conquer pa\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
     }
   ],
   "plan": [],
   "status": "completed",
   "checkpoint": {
-    "step": 7,
+    "step": 5,
     "files": {
       ".env.example": "73fb38b8b10e5db940f244144da59390",
       ".env.local": "e17b7cb9864b4af19ce5af33d8addcb6",
       "btn_output.txt": "a6a59e9b83b06719c8c32f1b6ee1c3c8",
       "errors.txt": "dca37a95af62812ef91171e8444ae0ec",
-      "generated.json": "1ff7f037ac7af357faf41ad0b7e5f766",
+      "generated.json": "29d11a2db57538eb6f807157e28d6220",
       "jest.config.ts": "6b828931b61bc4357fe915d2eeb16f24",
       "jest.setup.ts": "b587f8d9bc67a7ad4c3279080c0c8546",
       "next.config.js": "cd50d4724da553194451ad76a95cbf16",
@@ -951,12 +996,12 @@
       "plan.md": "df680dee00c139e334ae2739375e24c3",
       "postcss.config.mjs": "da0b06fda8ccd9721975a6cd44e5f0c0",
       "README.md": "fe60d50862e81e50aebc6bcdee1d44d8",
-      "state.json": "c8a0a31e6f88a7a045cc48fa2cc111e9",
+      "state.json": "d14a25579fbdd8e168044012180782f0",
       "tailwind.config.ts": "a9bf9adf0b81aecf12c0d79f68e843fb",
       "test_output.txt": "7022f8f0a2cc54e9e3226d54c23cdf1b",
       "tsconfig.json": "c42a097a450eb0a8985f24bed304a666",
       "verificare_finala.txt": "26ac2dcd1c7efbdbcf6185c4eed62bc9",
-      "prisma\\schema.prisma": "6ea3c1db9b5c8632391017a998944bfe",
+      "prisma\\schema.prisma": "62225aa39194ae770a12e3c698c74fe3",
       "src\\middleware.ts": "29d6d53ea079b41f70fd48219fbe3470",
       "src\\app\\globals.css": "98d00968f220c7b6b1fde0794c1ec598",
       "src\\app\\layout.tsx": "11152b90af76811723db74e74ef71ccb",
@@ -1050,5 +1095,5 @@
     }
   },
   "modified_files": {},
-  "updated": 1783177189.5716808
+  "updated": 1783178963.5082903
 }

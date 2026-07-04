@@ -21,6 +21,7 @@ model User {
   createdBy     User?     @relation("UserCreator", fields: [createdById], references: [id])
   createdUsers  User[]    @relation("UserCreator")
 
+  workspaces      Workspace[] @relation("WorkspaceCreator")
   accounts         Account[]
   sessions         Session[]
   memberOf         WorkspaceMember[]
@@ -95,7 +96,7 @@ model Workspace {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  createdBy User             @relation(fields: [createdById], references: [id])
+  createdBy User             @relation("WorkspaceCreator", fields: [createdById], references: [id])
   members   WorkspaceMember[]
   projects  Project[]
 
@@ -186,6 +187,7 @@ model Task {
   attachments Attachment[]
   activityLogs ActivityLog[]
   subtasks  Subtask[]
+  notifications Notification[]
 
   @@map("tasks")
 }
@@ -312,6 +314,7 @@ model ProductAttribute {
 
   values             ProductAttributeValue[]
   variantAttributes  ProductVariantAttribute[]
+  orderItemAttributes OrderItemAttribute[]
 
   @@map("product_attributes")
 }
