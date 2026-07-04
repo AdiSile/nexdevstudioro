@@ -257,9 +257,6 @@ const nextConfig = {
 
   // ----- Output -----
   output: process.env.DOCKER_BUILD === "true" ? "standalone" : undefined,
-  outputFileTracingIncludes: {
-    "/*": ["./public/**/*", "./src/lib/i18n/messages/**/*"],
-  },
 
   // ----- Transpile external packages -----
   transpilePackages: [
