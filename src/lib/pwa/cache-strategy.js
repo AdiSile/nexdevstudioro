@@ -3,6 +3,10 @@
  * @see https://developer.chrome.com/docs/workbox/reference/workbox-build/#type-RuntimeCachingOptions
  */
 
+const isPWAEnabled =
+  process.env.PWA_ENABLED === 'true' ||
+  process.env.NEXT_PUBLIC_PWA === 'true';
+
 const CACHE_NAMES = {
   static: "nexus-static-v1",
   images: "nexus-images-v1",
@@ -11,7 +15,7 @@ const CACHE_NAMES = {
   external: "nexus-external-v1",
 };
 
-module.exports = [
+const strategies = [
   // Fonts – Cache First (1 year immutable)
   {
     urlPattern: /^https:\/\/fonts\.(?:googleapis|gstatic)\.com\/.*/i,
@@ -63,3 +67,5 @@ module.exports = [
     },
   },
 ];
+
+module.exports = isPWAEnabled ? strategies : [];

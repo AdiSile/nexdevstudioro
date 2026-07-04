@@ -6,18 +6,19 @@ const { resolve } = require("path");
 // Plugins
 // ---------------------------------------------------------------------------
 
-/** PWA (next-pwa v5) – offline, cache, push notifications */
-const withPWA = require("next-pwa")({
-  dest: "public",
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === "development",
-  runtimeCaching: require("./src/lib/pwa/cache-strategy"),
-  buildExcludes: [/middleware-manifest\.json$/],
-  fallbacks: {
-    document: "/offline",
-  },
-});
+/** PWA (next-pwa v5) – DEZACTIVAT temporar pentru compatibilitate Next.js 14 */
+// const withPWA = require("next-pwa")({
+//   dest: "public",
+//   register: true,
+//   skipWaiting: true,
+//   disable: process.env.NODE_ENV === "development",
+//   runtimeCaching: require("./src/lib/pwa/cache-strategy"),
+//   buildExcludes: [/middleware-manifest\.json$/],
+//   fallbacks: {
+//     document: "/offline",
+//   },
+// });
+const withPWA = (config) => config; // No-op passthrough (PWA dezactivat temporar)
 
 /** Internationalisation (next-intl v3) */
 const withNextIntl = require("next-intl/plugin")("./src/lib/i18n/request.ts");
@@ -146,17 +147,6 @@ const nextConfig = {
       { protocol: "https", hostname: "**.googleusercontent.com" },
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
       { protocol: "https", hostname: "avatars.githubusercontent.com" },
-    ],
-  },
-
-  // ----- i18n (Domain-based) -----
-  i18n: {
-    locales: ["ro", "en"],
-    defaultLocale: "ro",
-    localeDetection: true,
-    domains: [
-      { domain: "nexusdevstudio.ro", defaultLocale: "ro" },
-      { domain: "en.nexusdevstudio.ro", defaultLocale: "en" },
     ],
   },
 

@@ -338,7 +338,9 @@ model ProductVariantAttribute {
   valueId                String?                     @map("value_id")
   productAttributeValue  ProductAttributeValue?      @relation("fk_variant_attr_value", fields: [valueId], references: [id], onDelete: SetNull)
   productAttribute       ProductAttribute            @relation(fields: [attributeId], references: [id])
+  productVariant         ProductVariant             @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
 
+  @@unique([productVariantId, attributeId])
   @@map("product_variant_attributes")
 }
 
@@ -379,6 +381,8 @@ model Category {
   name      String
   products  Product[]   @relation("CategoryProducts")
   blogPosts BlogPost[]  @relation("CategoryBlogPosts")
+
+  @@map("categories")
 }
 
 model Product {
@@ -386,8 +390,19 @@ model Product {
   name       String
   categoryId String   @map("category_id")
   category   Category @relation("CategoryProducts", fields: [categoryId], references: [id])
+  variants   ProductVariant[]
 
   @@map("products")
+}
+
+model ProductVariant {
+  id        String                      @id @default(cuid())
+  name      String
+  productId String                      @map("product_id")
+  product   Product                     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  attributes ProductVariantAttribute[]
+
+  @@map("product_variants")
 }
 
 model BlogPost {

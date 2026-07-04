@@ -46,6 +46,11 @@
  *   SECURITY_CSP_REPORT_ONLY     — "true" to use Content-Security-Policy-Report-Only
  *   SECURITY_HSTS_MAX_AGE        — max-age for Strict-Transport-Security
  *   CORS_ALLOWED_ORIGINS         — comma-separated allowed origins
+ *
+ * Next.js 14 Compatibility:
+ *   All APIs used (NextResponse, NextRequest, cookies, headers) are fully
+ *   compatible with Next.js 14's Edge Runtime. The middleware uses only
+ *   stable, non-deprecated APIs and supports the latest matcher conventions.
  */
 
 import { NextResponse } from "next/server";
@@ -696,6 +701,7 @@ async function checkAuth(request: NextRequest): Promise<AuthContext> {
 
 /**
  * Verify a JWT using jose (edge-compatible).
+ * Only imports `jwtVerify` – `createRemoteJWKSet` is not needed for symmetric HS256/HS512.
  */
 async function verifyJWT(
   token: string,
@@ -703,7 +709,7 @@ async function verifyJWT(
 ): Promise<SessionPayload | null> {
   try {
     // Dynamic import to avoid bundling jose in all builds
-    const { jwtVerify, createRemoteJWKSet } = await import("jose");
+    const { jwtVerify } = await import("jose");
 
     // Encode secret to Uint8Array
     const encoder = new TextEncoder();
