@@ -1,0 +1,261 @@
+Prisma schema loaded from schema.prisma.
+
+Error: Prisma schema validation - (validate wasm)
+Error code: P1012
+[1;91merror[0m: [1mError validating field `tags` in model `Organization`: The relation field `tags` on model `Organization` is missing an opposite relation field on the model `Tag`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:227[0m
+[1;94m   | [0m
+[1;94m226 | [0m  deletedAt      DateTime?          @map("deleted_at") @db.Timestamptz
+[1;94m227 | [0m  [1;91mtags           Tag[]              @relation("OrganizationTags")[0m
+[1;94m228 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `roles` in model `Organization`: The relation field `roles` on model `Organization` is missing an opposite relation field on the model `Role`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:242[0m
+[1;94m   | [0m
+[1;94m241 | [0m  media          Media[]
+[1;94m242 | [0m  [1;91mroles          Role[][0m
+[1;94m243 | [0m  ssoConfigs     SsoConfig[]
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `ssoConfigs` in model `Organization`: The relation field `ssoConfigs` on model `Organization` is missing an opposite relation field on the model `SsoConfig`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:243[0m
+[1;94m   | [0m
+[1;94m242 | [0m  roles          Role[]
+[1;94m243 | [0m  [1;91mssoConfigs     SsoConfig[][0m
+[1;94m244 | [0m  apiKeys        ApiKey[]
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `socialLinks` in model `Organization`: The relation field `socialLinks` on model `Organization` is missing an opposite relation field on the model `SocialLink`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:246[0m
+[1;94m   | [0m
+[1;94m245 | [0m  webhooks       Webhook[]
+[1;94m246 | [0m  [1;91msocialLinks    SocialLink[][0m
+[1;94m247 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `createdBy` in model `User`: The relation field `createdBy` on model `User` is missing an opposite relation field on the model `User`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:279[0m
+[1;94m   | [0m
+[1;94m278 | [0m  createdById            String?            @map("created_by_id") @db.Uuid
+[1;94m279 | [0m  [1;91mcreatedBy              User?              @relation("UserCreator", fields: [createdById], references: [id])[0m
+[1;94m280 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `preferences` in model `User`: The relation field `preferences` on model `User` is missing an opposite relation field on the model `UserPreference`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:287[0m
+[1;94m   | [0m
+[1;94m286 | [0m  apiKeys                ApiKey[]           @relation("ApiKeyOwner")
+[1;94m287 | [0m  [1;91mpreferences            UserPreference[][0m
+[1;94m288 | [0m  addresses              Address[]
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `addresses` in model `User`: The relation field `addresses` on model `User` is missing an opposite relation field on the model `Address`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:288[0m
+[1;94m   | [0m
+[1;94m287 | [0m  preferences            UserPreference[]
+[1;94m288 | [0m  [1;91maddresses              Address[][0m
+[1;94m289 | [0m  notes                  Note[]
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `notes` in model `User`: The relation field `notes` on model `User` is missing an opposite relation field on the model `Note`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:289[0m
+[1;94m   | [0m
+[1;94m288 | [0m  addresses              Address[]
+[1;94m289 | [0m  [1;91mnotes                  Note[][0m
+[1;94m290 | [0m  tags                   Tag[]              @relation("UserTags")
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `tags` in model `User`: The relation field `tags` on model `User` is missing an opposite relation field on the model `Tag`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:290[0m
+[1;94m   | [0m
+[1;94m289 | [0m  notes                  Note[]
+[1;94m290 | [0m  [1;91mtags                   Tag[]              @relation("UserTags")[0m
+[1;94m291 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `notes` in model `Project`: The relation field `notes` on model `Project` is missing an opposite relation field on the model `Note`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:328[0m
+[1;94m   | [0m
+[1;94m327 | [0m  workflow            Workflow[]
+[1;94m328 | [0m  [1;91mnotes               Note[][0m
+[1;94m329 | [0m  tags                Tag[]         @relation("ProjectTags")
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `tags` in model `Project`: The relation field `tags` on model `Project` is missing an opposite relation field on the model `Tag`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:329[0m
+[1;94m   | [0m
+[1;94m328 | [0m  notes               Note[]
+[1;94m329 | [0m  [1;91mtags                Tag[]         @relation("ProjectTags")[0m
+[1;94m330 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `notes` in model `Task`: The relation field `notes` on model `Task` is missing an opposite relation field on the model `Note`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:364[0m
+[1;94m   | [0m
+[1;94m363 | [0m
+[1;94m364 | [0m  [1;91mnotes               Note[][0m
+[1;94m365 | [0m  tags                Tag[]        @relation("TaskTags")
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `tags` in model `Task`: The relation field `tags` on model `Task` is missing an opposite relation field on the model `Tag`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:365[0m
+[1;94m   | [0m
+[1;94m364 | [0m  notes               Note[]
+[1;94m365 | [0m  [1;91mtags                Tag[]        @relation("TaskTags")[0m
+[1;94m366 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `addresses` in model `Client`: The relation field `addresses` on model `Client` is missing an opposite relation field on the model `Address`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:395[0m
+[1;94m   | [0m
+[1;94m394 | [0m  invoices            Invoice[]
+[1;94m395 | [0m  [1;91maddresses           Address[][0m
+[1;94m396 | [0m  tags                Tag[]          @relation("ClientTags")
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `tags` in model `Client`: The relation field `tags` on model `Client` is missing an opposite relation field on the model `Tag`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:396[0m
+[1;94m   | [0m
+[1;94m395 | [0m  addresses           Address[]
+[1;94m396 | [0m  [1;91mtags                Tag[]          @relation("ClientTags")[0m
+[1;94m397 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `address` in model `Invoice`: The relation field `address` on model `Invoice` is missing an opposite relation field on the model `Address`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:433[0m
+[1;94m   | [0m
+[1;94m432 | [0m  items               InvoiceItem[]
+[1;94m433 | [0m  [1;91maddress             Address?        @relation("InvoiceAddress", fields: [addressId], references: [id])[0m
+[1;94m434 | [0m  addressId           String?         @map("address_id") @db.Uuid
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `products` in model `Category`: The relation field `products` on model `Category` is missing an opposite relation field on the model `Product`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:495[0m
+[1;94m   | [0m
+[1;94m494 | [0m  children        Category[]   @relation("CategoryHierarchy")
+[1;94m495 | [0m  [1;91mproducts        Product[][0m
+[1;94m496 | [0m  blogPosts       BlogPost[]
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `blogPosts` in model `Category`: The relation field `blogPosts` on model `Category` is missing an opposite relation field on the model `BlogPost`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:496[0m
+[1;94m   | [0m
+[1;94m495 | [0m  products        Product[]
+[1;94m496 | [0m  [1;91mblogPosts       BlogPost[][0m
+[1;94m497 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `category` in model `Product`: The relation field `category` on model `Product` is missing an opposite relation field on the model `Category`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:526[0m
+[1;94m   | [0m
+[1;94m525 | [0m  categoryId        String?         @map("category_id") @db.Uuid
+[1;94m526 | [0m  [1;91mcategory          Category?       @relation("CategoryProducts", fields: [categoryId], references: [id], onDelete: SetNull)[0m
+[1;94m527 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `tags` in model `Product`: The relation field `tags` on model `Product` is missing an opposite relation field on the model `Tag`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:533[0m
+[1;94m   | [0m
+[1;94m532 | [0m  cartItems         CartItem[]
+[1;94m533 | [0m  [1;91mtags              Tag[]            @relation("ProductTags")[0m
+[1;94m534 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `orderItemAttribute` in model `ProductAttributeValue`: The relation field `orderItemAttribute` on model `ProductAttributeValue` is missing an opposite relation field on the model `OrderItemAttribute`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:577[0m
+[1;94m   | [0m
+[1;94m576 | [0m  variantAttribute   ProductVariantAttribute[] @relation("fk_variant_attr_value")
+[1;94m577 | [0m  [1;91morderItemAttribute OrderItemAttribute[]      @relation("fk_order_item_attr_value")[0m
+[1;94m578 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `attribute` in model `OrderItemAttribute`: The relation field `attribute` on model `OrderItemAttribute` is missing an opposite relation field on the model `ProductAttribute`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:589[0m
+[1;94m   | [0m
+[1;94m588 | [0m  attributeId     String    @map("attribute_id") @db.Uuid
+[1;94m589 | [0m  [1;91mattribute       ProductAttribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)[0m
+[1;94m590 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `valueObj` in model `OrderItemAttribute`: The relation field `valueObj` on model `OrderItemAttribute` is missing an opposite relation field on the model `ProductAttributeValue`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:594[0m
+[1;94m   | [0m
+[1;94m593 | [0m
+[1;94m594 | [0m  [1;91mvalueObj     ProductAttributeValue? @relation(fields: [valueId], references: [id], onDelete: SetNull, map: "fk_order_item_attr_value")[0m
+[1;94m595 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `user` in model `Order`: The relation field `user` on model `Order` is missing an opposite relation field on the model `User`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:656[0m
+[1;94m   | [0m
+[1;94m655 | [0m  userId            String?      @map("user_id") @db.Uuid
+[1;94m656 | [0m  [1;91muser              User?        @relation(fields: [userId], references: [id], onDelete: SetNull)[0m
+[1;94m657 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `address` in model `Shipping`: The relation field `address` on model `Shipping` is missing an opposite relation field on the model `Address`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:707[0m
+[1;94m   | [0m
+[1;94m706 | [0m  order           Order           @relation("OrderShipping", fields: [orderId], references: [id], onDelete: Cascade)
+[1;94m707 | [0m  [1;91maddress         Address?        @relation("ShippingAddress", fields: [addressId], references: [id])[0m
+[1;94m708 | [0m  addressId       String?         @map("address_id") @db.Uuid
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `createdBy` in model `CMSPage`: The relation field `createdBy` on model `CMSPage` is missing an opposite relation field on the model `User`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:733[0m
+[1;94m   | [0m
+[1;94m732 | [0m  createdById     String?    @map("created_by_id") @db.Uuid
+[1;94m733 | [0m  [1;91mcreatedBy       User?      @relation("CmsPageCreator", fields: [createdById], references: [id])[0m
+[1;94m734 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `organization` in model `Form`: The relation field `organization` on model `Form` is missing an opposite relation field on the model `Organization`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:801[0m
+[1;94m   | [0m
+[1;94m800 | [0m  organizationId  String    @map("organization_id") @db.Uuid
+[1;94m801 | [0m  [1;91morganization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)[0m
+[1;94m802 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `category` in model `BlogPost`: The relation field `category` on model `BlogPost` is missing an opposite relation field on the model `Category`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:844[0m
+[1;94m   | [0m
+[1;94m843 | [0m  categoryId      String?     @map("category_id") @db.Uuid
+[1;94m844 | [0m  [1;91mcategory        Category?   @relation("BlogPostCategory", fields: [categoryId], references: [id], onDelete: SetNull)[0m
+[1;94m845 | [0m  createdById     String?     @map("created_by_id") @db.Uuid
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `createdBy` in model `BlogPost`: The relation field `createdBy` on model `BlogPost` is missing an opposite relation field on the model `User`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:846[0m
+[1;94m   | [0m
+[1;94m845 | [0m  createdById     String?     @map("created_by_id") @db.Uuid
+[1;94m846 | [0m  [1;91mcreatedBy       User?       @relation("BlogPostCreator", fields: [createdById], references: [id])[0m
+[1;94m847 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `organization` in model `BlogCategory`: The relation field `organization` on model `BlogCategory` is missing an opposite relation field on the model `Organization`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:866[0m
+[1;94m   | [0m
+[1;94m865 | [0m  organizationId  String       @map("organization_id") @db.Uuid
+[1;94m866 | [0m  [1;91morganization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)[0m
+[1;94m867 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `posts` in model `BlogCategory`: The relation field `posts` on model `BlogCategory` is missing an opposite relation field on the model `BlogPost`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:868[0m
+[1;94m   | [0m
+[1;94m867 | [0m
+[1;94m868 | [0m  [1;91mposts           BlogPost[][0m
+[1;94m869 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `organization` in model `Event`: The relation field `organization` on model `Event` is missing an opposite relation field on the model `Organization`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:892[0m
+[1;94m   | [0m
+[1;94m891 | [0m  organizationId  String        @map("organization_id") @db.Uuid
+[1;94m892 | [0m  [1;91morganization    Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)[0m
+[1;94m893 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `user` in model `EventRegistration`: The relation field `user` on model `EventRegistration` is missing an opposite relation field on the model `User`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:908[0m
+[1;94m   | [0m
+[1;94m907 | [0m  userId          String?            @map("user_id") @db.Uuid
+[1;94m908 | [0m  [1;91muser            User?              @relation(fields: [userId], references: [id], onDelete: SetNull)[0m
+[1;94m909 | [0m  email           String?            @db.VarChar(300)
+[1;94m   | [0m
+[1;91merror[0m: [1mError validating field `valueObj` in model `ProductVariantAttribute`: The relation field `valueObj` on model `ProductVariantAttribute` is missing an opposite relation field on the model `ProductAttributeValue`. Either run `prisma format` or add it manually.[0m
+  [1;94m-->[0m  [4mschema.prisma:1582[0m
+[1;94m   | [0m
+[1;94m1581 | [0m  attribute   ProductAttribute       @relation("ProductVariantAttributes", fields: [attributeId], references: [id], onDelete: Cascade)
+[1;94m1582 | [0m  [1;91mvalueObj    ProductAttributeValue? @relation(fields: [valueId], references: [id], onDelete: SetNull, map: "fk_variant_attr_value")[0m
+[1;94m1583 | [0m  productAttributeValue ProductAttributeValue? @relation("fk_variant_attr_value")
+[1;94m   | [0m
+[1;91merror[0m: [1mError parsing attribute "@relation": The relation field `productAttributeValue` on Model `ProductVariantAttribute` must specify the `fields` argument in the @relation attribute. You can run `prisma format` to fix this automatically.[0m
+  [1;94m-->[0m  [4mschema.prisma:1583[0m
+[1;94m   | [0m
+[1;94m1582 | [0m  valueObj    ProductAttributeValue? @relation(fields: [valueId], references: [id], onDelete: SetNull, map: "fk_variant_attr_value")
+[1;94m1583 | [0m  [1;91mproductAttributeValue ProductAttributeValue? @relation("fk_variant_attr_value")[0m
+[1;94m1584 | [0m
+[1;94m   | [0m
+[1;91merror[0m: [1mError parsing attribute "@relation": The relation field `productAttributeValue` on Model `ProductVariantAttribute` must specify the `references` argument in the @relation attribute.[0m
+  [1;94m-->[0m  [4mschema.prisma:1583[0m
+[1;94m   | [0m
+[1;94m1582 | [0m  valueObj    ProductAttributeValue? @relation(fields: [valueId], references: [id], onDelete: SetNull, map: "fk_variant_attr_value")
+[1;94m1583 | [0m  [1;91mproductAttributeValue ProductAttributeValue? @relation("fk_variant_attr_value")[0m
+[1;94m1584 | [0m
+[1;94m   | [0m
+
+Validation Error Count: 36
+[Context: validate]
+
+Prisma CLI Version : 7.8.0

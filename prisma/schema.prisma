@@ -1,51 +1,151 @@
-// ============================================================
-// NexusDevStudio.ro — Enterprise AI-Powered Digital Platform
-// Prisma Schema PostgreSQL | Multi-Tenant | Modular Monolith
-// ============================================================
-
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions", "fullTextSearch"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
-// ─── Extensions ──────────────────────────────────────────────
-// CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-// CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-// CREATE EXTENSION IF NOT EXISTS "pg_trgm";
-// CREATE EXTENSION IF NOT EXISTS "vector";
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  hashedPassword String?  @map("hashed_password")
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  createdById   String?   @map("created_by_id")
+  createdBy     User?     @relation("UserCreator", fields: [createdById], references: [id])
+  createdUsers  User[]    @relation("UserCreator")
 
-// ══════════════════════════════════════════════════════════════
-// ENUMS
-// ══════════════════════════════════════════════════════════════
+  accounts         Account[]
+  sessions         Session[]
+  memberOf         WorkspaceMember[]
+  assignedTasks    Task[]               @relation("TaskAssignee")
+  createdTasks     Task[]               @relation("TaskCreator")
+  createdProjects  Project[]
+  comments         Comment[]
+  attachments      Attachment[]
+  notifications    Notification[]
+  activityLogs     ActivityLog[]
+  reportGenerated  Report[]
 
-enum UserStatus {
-  ACTIVE
-  INACTIVE
-  SUSPENDED
-  BANNED
-  PENDING_VERIFICATION
+  @@map("users")
 }
 
-enum OrganizationStatus {
-  ACTIVE
-  INACTIVE
-  SUSPENDED
-  TRIAL
-  GRACE_PERIOD
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  id         String   @id @default(cuid())
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+enum Role {
+  USER
+  ADMIN
+  OWNER
+  MODERATOR
+}
+
+model Workspace {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  slug        String   @unique
+  image       String?
+  inviteCode  String?  @unique @map("invite_code")
+  createdById String   @map("created_by_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  createdBy User             @relation(fields: [createdById], references: [id])
+  members   WorkspaceMember[]
+  projects  Project[]
+
+  @@map("workspaces")
+}
+
+enum MemberRole {
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+model WorkspaceMember {
+  id          String     @id @default(cuid())
+  userId      String     @map("user_id")
+  workspaceId String     @map("workspace_id")
+  role        MemberRole @default(MEMBER)
+  joinedAt    DateTime   @default(now()) @map("joined_at")
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, workspaceId])
+  @@map("workspace_members")
 }
 
 enum ProjectStatus {
-  DRAFT
   ACTIVE
-  ON_HOLD
-  COMPLETED
-  CANCELLED
   ARCHIVED
+  COMPLETED
+  ON_HOLD
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  workspaceId String        @map("workspace_id")
+  status      ProjectStatus @default(ACTIVE)
+  createdById String        @map("created_by_id")
+  dueDate     DateTime?     @map("due_date")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  workspace Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdBy User       @relation(fields: [createdById], references: [id])
+  tasks     Task[]
+  activityLogs ActivityLog[]
+  invoices     Invoice[]
+
+  @@map("projects")
 }
 
 enum TaskStatus {
@@ -57,1943 +157,249 @@ enum TaskStatus {
   CANCELLED
 }
 
-enum TaskPriority {
-  LOWEST
+enum Priority {
   LOW
   MEDIUM
   HIGH
   URGENT
 }
 
-enum ClientStatus {
-  LEAD
-  PROSPECT
-  ACTIVE
-  INACTIVE
-  CHURNED
-}
-
-enum InvoiceStatus {
-  DRAFT
-  SENT
-  VIEWED
-  PAID
-  PARTIALLY_PAID
-  OVERDUE
-  CANCELLED
-  REFUNDED
-}
-
-enum PaymentMethod {
-  STRIPE
-  PAYPAL
-  BANK_TRANSFER
-  CRYPTO
-  CASH
-  OTHER
-}
-
-enum PaymentStatus {
-  PENDING
-  PROCESSING
-  COMPLETED
-  FAILED
-  REFUNDED
-  PARTIALLY_REFUNDED
-  DISPUTED
-}
-
-enum OrderStatus {
-  CART
-  PENDING
-  CONFIRMED
-  PROCESSING
-  SHIPPED
-  DELIVERED
-  CANCELLED
-  RETURNED
-  REFUNDED
-}
-
-enum ShippingStatus {
-  PENDING
-  PROCESSING
-  IN_TRANSIT
-  DELIVERED
-  FAILED
-  RETURNED
-}
-
-enum CMSStatus {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
-  SCHEDULED
-}
-
-enum BlogStatus {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
-  SCHEDULED
-}
-
-enum EventStatus {
-  DRAFT
-  PUBLISHED
-  CANCELLED
-  POSTPONED
-  COMPLETED
-}
-
-enum RegistrationStatus {
-  PENDING
-  CONFIRMED
-  CANCELLED
-  ATTENDED
-  NO_SHOW
-}
-
-enum AIProvider {
-  OPENAI
-  ANTHROPIC
-  GOOGLE
-  MISTRAL
-  DEEPSEEK
-  XAI
-  CUSTOM
-}
-
-enum AIModelType {
-  CHAT
-  COMPLETION
-  EMBEDDING
-  IMAGE
-  AUDIO
-  VIDEO
-  MODERATION
-}
-
-enum NotificationChannel {
-  EMAIL
-  SMS
-  PUSH
-  WHATSAPP
-  IN_APP
-  WEBHOOK
-}
-
-enum NotificationStatus {
-  PENDING
-  SENT
-  DELIVERED
-  READ
-  FAILED
-  BOUNCED
-}
-
-enum AuditAction {
-  CREATE
-  UPDATE
-  DELETE
-  RESTORE
-  LOGIN
-  LOGOUT
-  EXPORT
-  IMPORT
-}
-
-enum ContactStatus {
-  ACTIVE
-  INACTIVE
-  BLOCKED
-  PENDING
-}
-
-enum IntegrationType {
-  GOOGLE_ANALYTICS
-  GOOGLE_SEARCH_CONSOLE
-  FACEBOOK_PIXEL
-  LINKEDIN_INSIGHT
-  TWITTER_PIXEL
-  TIKTOK_PIXEL
-  HOTJAR
-  INTERCOM
-  MAILCHIMP
-  SENDGRID
-  TWILIO
-  STRIPE_CONNECT
-  CUSTOM
-}
-
-enum IntegrationStatus {
-  ACTIVE
-  INACTIVE
-  ERROR
-  PENDING
-}
-
-// ══════════════════════════════════════════════════════════════
-// CORE: Organizations, Users, Teams
-// ══════════════════════════════════════════════════════════════
-
-model Organization {
-  id            String   @id @default(uuid()) @db.Uuid
-  name          String   @db.VarChar(300)
-  slug          String   @unique @db.VarChar(200)
-  domain        String?  @db.VarChar(300)
-  logo          String?  @db.Text
-  settings      Json?    @db.JsonB
-  metadata      Json?    @db.JsonB
-  status        OrganizationStatus @default(TRIAL)
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
-  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz
-
-  users         OrganizationUser[]
-  projects      Project[]
-  clients       Client[]
-  invoices      Invoice[]
-  orders        Order[]
-  products      Product[]
-  categories    ProductCategory[]
-  cmsPages      CMSPage[]
-  blogPosts     BlogPost[]
-  events        Event[]
-  forms         Form[]
-  workflows     Workflow[]
-  apiKeys       ApiKey[]
-  webhooks      Webhook[]
-  featureFlags  FeatureFlag[]
-  aiConfigs     AIConfig[]
-  aiSessions    AISession[]
-  aiPrompts     AIPrompt[]
-  aiAgents      AIAgent[]
-  aiMemories    AIMemory[]
-  aiDocuments   AIDocument[]
-  analyticsEvents AnalyticsEvent[]
-
-  @@index([slug])
-  @@index([status])
-  @@map("organizations")
-}
-
-model User {
-  id            String    @id @default(uuid()) @db.Uuid
-  email         String    @unique @db.VarChar(320)
-  passwordHash  String?   @map("password_hash") @db.VarChar(300)
-  firstName     String?   @map("first_name") @db.VarChar(150)
-  lastName      String?   @map("last_name") @db.VarChar(150)
-  avatar        String?   @db.Text
-  phone         String?   @db.VarChar(30)
-  timezone      String?   @default("UTC") @db.VarChar(50)
-  locale        String?   @default("en") @db.VarChar(10)
-  status        UserStatus @default(PENDING_VERIFICATION)
-  emailVerified DateTime? @map("email_verified_at") @db.Timestamptz
-  lastLoginAt   DateTime? @map("last_login_at") @db.Timestamptz
-  lastLoginIp   String?   @map("last_login_ip") @db.VarChar(45)
-  metadata      Json?     @db.JsonB
-  settings      Json?     @db.JsonB
-  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime  @updatedAt @map("updated_at") @db.Timestamptz
-  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz
-
-  organizations     OrganizationUser[]
-  sessions          Session[]
-  notifications     Notification[]
-  assignedTasks     Task[] @relation("AssignedTasks")
-  createdTasks      Task[] @relation("CreatedTasks")
-  comments          Comment[]
-  auditLogs         AuditLog[]
-  aiSessions        AISession[]   @relation("AISessionUser")
-  aiMemories        AIMemory[]    @relation("AIMemoryUser")
-  integrations      Integration[] @relation("IntegrationUser")
-  cartItems         CartItem[]    @relation("CartItemUser")
-  orders            Order[]       @relation("OrderUser")
-  apiKeys           ApiKey[]      @relation("ApiKeyUser")
-
-  @@index([email])
-  @@index([status])
-  @@map("users")
-}
-
-model Session {
-  id           String   @id @default(uuid()) @db.Uuid
-  token        String   @unique @db.VarChar(500)
-  ipAddress    String?  @map("ip_address") @db.VarChar(45)
-  userAgent    String?  @map("user_agent") @db.Text
-  expiresAt    DateTime @map("expires_at") @db.Timestamptz
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  userId       String   @map("user_id") @db.Uuid
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([token])
-  @@index([expiresAt])
-  @@map("sessions")
-}
-
-model OrganizationUser {
-  id             String   @id @default(uuid()) @db.Uuid
-  role           String   @default("MEMBER") @db.VarChar(50)
-  permissions    String[] @default([]) @db.VarChar(100)
-  joinedAt       DateTime @default(now()) @map("joined_at") @db.Timestamptz
-
-  organizationId String       @map("organization_id") @db.Uuid
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  userId         String       @map("user_id") @db.Uuid
-  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([organizationId, userId])
-  @@index([userId])
-  @@map("organization_users")
-}
-
-model Team {
-  id             String   @id @default(uuid()) @db.Uuid
-  name           String   @db.VarChar(200)
-  description    String?  @db.Text
-  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId String       @map("organization_id") @db.Uuid
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  members        TeamMember[]
-
-  @@index([organizationId])
-  @@map("teams")
-}
-
-model TeamMember {
-  id        String   @id @default(uuid()) @db.Uuid
-  role      String   @default("MEMBER") @db.VarChar(50)
-  addedAt   DateTime @default(now()) @map("added_at") @db.Timestamptz
-
-  teamId    String   @map("team_id") @db.Uuid
-  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  userId    String   @map("user_id") @db.Uuid
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([teamId, userId])
-  @@index([userId])
-  @@map("team_members")
-}
-
-// ══════════════════════════════════════════════════════════════
-// PROJECT MANAGEMENT
-// ══════════════════════════════════════════════════════════════
-
-model Project {
-  id              String   @id @default(uuid()) @db.Uuid
-  name            String   @db.VarChar(300)
-  slug            String   @db.VarChar(200)
-  description     String?  @db.Text
-  status          ProjectStatus @default(DRAFT)
-  priority        TaskPriority? @default(MEDIUM)
-  startDate       DateTime? @map("start_date") @db.Date
-  endDate         DateTime? @map("end_date") @db.Date
-  budget          Decimal? @db.Decimal(15, 2)
-  spent           Decimal? @default(0) @db.Decimal(15, 2)
-  progress        Float?   @default(0)
-  metadata        Json?    @db.JsonB
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz
-
-  organizationId  String       @map("organization_id") @db.Uuid
-  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  managerId       String?      @map("manager_id") @db.Uuid
-  manager         User?        @relation(fields: [managerId], references: [id], onDelete: SetNull)
-  clientId        String?      @map("client_id") @db.Uuid
-  client          Client?      @relation(fields: [clientId], references: [id], onDelete: SetNull)
-
-  tasks           Task[]
-  milestones      Milestone[]
-  files           ProjectFile[]
-
-  @@unique([slug, organizationId])
-  @@index([organizationId])
-  @@index([managerId])
-  @@index([clientId])
-  @@index([status])
-  @@map("projects")
-}
-
-model Milestone {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @db.VarChar(300)
-  dueDate     DateTime? @map("due_date") @db.Timestamptz
-  completedAt DateTime? @map("completed_at") @db.Timestamptz
-  sortOrder   Int      @default(0) @map("sort_order")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  projectId   String   @map("project_id") @db.Uuid
-  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-
-  tasks       Task[]
-
-  @@index([projectId])
-  @@map("milestones")
-}
-
 model Task {
-  id            String   @id @default(uuid()) @db.Uuid
-  title         String   @db.VarChar(500)
-  description   String?  @db.Text
-  status        TaskStatus @default(TODO)
-  priority      TaskPriority? @default(MEDIUM)
-  dueDate       DateTime? @map("due_date") @db.Timestamptz
-  completedAt   DateTime? @map("completed_at") @db.Timestamptz
-  estimatedHours Float?  @map("estimated_hours")
-  actualHours   Float?   @map("actual_hours")
-  sortOrder     Int      @default(0) @map("sort_order")
-  metadata      Json?    @db.JsonB
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  id          String     @id @default(cuid())
+  title       String
+  description String?    @db.Text
+  projectId   String     @map("project_id")
+  assigneeId  String?    @map("assignee_id")
+  status      TaskStatus @default(TODO)
+  priority    Priority   @default(MEDIUM)
+  position    Int        @default(0)
+  dueDate     DateTime?  @map("due_date")
+  createdById String     @map("created_by_id")
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
 
-  projectId     String    @map("project_id") @db.Uuid
-  project       Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  milestoneId   String?   @map("milestone_id") @db.Uuid
-  milestone     Milestone? @relation(fields: [milestoneId], references: [id], onDelete: SetNull)
-  assigneeId    String?   @map("assignee_id") @db.Uuid
-  assignee      User?     @relation("AssignedTasks", fields: [assigneeId], references: [id], onDelete: SetNull)
-  creatorId     String?   @map("creator_id") @db.Uuid
-  creator       User?     @relation("CreatedTasks", fields: [creatorId], references: [id], onDelete: SetNull)
+  project   Project     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignee  User?       @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  creator   User        @relation("TaskCreator", fields: [createdById], references: [id])
+  comments  Comment[]
+  attachments Attachment[]
+  activityLogs ActivityLog[]
+  subtasks  Subtask[]
 
-  subtasks      SubTask[]
-  timeEntries   TimeEntry[]
-  comments      Comment[]
-  attachments   TaskAttachment[]
-  tags          TaskTag[]
-
-  @@index([projectId])
-  @@index([assigneeId])
-  @@index([status])
-  @@index([priority])
-  @@index([dueDate])
   @@map("tasks")
 }
 
-model SubTask {
-  id          String   @id @default(uuid()) @db.Uuid
-  title       String   @db.VarChar(500)
-  isCompleted Boolean  @default(false) @map("is_completed")
-  sortOrder   Int      @default(0) @map("sort_order")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  taskId      String   @map("task_id") @db.Uuid
-  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
-
-  @@index([taskId])
-  @@map("sub_tasks")
+enum SubtaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
 }
 
-model TimeEntry {
-  id          String   @id @default(uuid()) @db.Uuid
-  description String?  @db.Text
-  startTime   DateTime @map("start_time") @db.Timestamptz
-  endTime     DateTime? @map("end_time") @db.Timestamptz
-  duration    Int?     // seconds
-  billable    Boolean  @default(true)
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+model Subtask {
+  id        String        @id @default(cuid())
+  title     String
+  taskId    String        @map("task_id")
+  status    SubtaskStatus @default(TODO)
+  position  Int           @default(0)
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
 
-  taskId      String   @map("task_id") @db.Uuid
-  task        Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  userId      String   @map("user_id") @db.Uuid
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
-  @@index([taskId])
-  @@index([userId])
-  @@map("time_entries")
+  @@map("subtasks")
 }
 
 model Comment {
-  id        String   @id @default(uuid()) @db.Uuid
+  id        String   @id @default(cuid())
   content   String   @db.Text
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  taskId    String   @map("task_id")
+  authorId  String   @map("author_id")
+  parentId  String?  @map("parent_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  taskId    String?  @map("task_id") @db.Uuid
-  task      Task?    @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  userId    String   @map("user_id") @db.Uuid
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task     Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  author   User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentReplies")
 
-  @@index([taskId])
-  @@index([userId])
   @@map("comments")
 }
 
-model TaskAttachment {
-  id        String   @id @default(uuid()) @db.Uuid
-  fileName  String   @map("file_name") @db.VarChar(500)
-  fileUrl   String   @map("file_url") @db.Text
-  fileSize  Int      @map("file_size")
-  mimeType  String?  @map("mime_type") @db.VarChar(100)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+model Attachment {
+  id        String   @id @default(cuid())
+  filename  String
+  url       String
+  size      Int
+  mimeType  String   @map("mime_type")
+  taskId    String   @map("task_id")
+  uploaderId String  @map("uploader_id")
+  createdAt DateTime @default(now()) @map("created_at")
 
-  taskId    String   @map("task_id") @db.Uuid
-  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  task     Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  uploader User @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
 
-  @@index([taskId])
-  @@map("task_attachments")
+  @@map("attachments")
 }
 
-model TaskTag {
-  id        String   @id @default(uuid()) @db.Uuid
-  name      String   @db.VarChar(100)
-  color     String?  @db.VarChar(50)
-  taskId    String   @map("task_id") @db.Uuid
-  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
-
-  @@unique([taskId, name])
-  @@index([taskId])
-  @@map("task_tags")
+enum NotificationType {
+  TASK_ASSIGNED
+  COMMENT_ADDED
+  TASK_STATUS_CHANGED
+  MENTIONED
+  INVITED_TO_WORKSPACE
 }
 
-model ProjectFile {
-  id        String   @id @default(uuid()) @db.Uuid
-  fileName  String   @map("file_name") @db.VarChar(500)
-  fileUrl   String   @map("file_url") @db.Text
-  fileSize  Int      @map("file_size")
-  mimeType  String?  @map("mime_type") @db.VarChar(100)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String           @map("user_id")
+  type      NotificationType
+  message   String
+  taskId    String?          @map("task_id")
+  read      Boolean          @default(false)
+  createdAt DateTime         @default(now()) @map("created_at")
 
-  projectId String   @map("project_id") @db.Uuid
-  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task Task? @relation(fields: [taskId], references: [id], onDelete: SetNull)
 
-  @@index([projectId])
-  @@map("project_files")
+  @@map("notifications")
 }
 
-// ══════════════════════════════════════════════════════════════
-// CRM: Clients, Contacts
-// ══════════════════════════════════════════════════════════════
+model ActivityLog {
+  id        String   @id @default(cuid())
+  projectId String   @map("project_id")
+  taskId    String?  @map("task_id")
+  userId    String   @map("user_id")
+  action    String
+  details   Json?
+  createdAt DateTime @default(now()) @map("created_at")
 
-model Client {
-  id            String    @id @default(uuid()) @db.Uuid
-  name          String    @db.VarChar(300)
-  company       String?   @db.VarChar(300)
-  email         String?   @db.VarChar(320)
-  phone         String?   @db.VarChar(30)
-  address       String?   @db.Text
-  city          String?   @db.VarChar(200)
-  country       String?   @db.VarChar(100)
-  taxId         String?   @map("tax_id") @db.VarChar(100)
-  website       String?   @db.VarChar(500)
-  notes         String?   @db.Text
-  status        ClientStatus @default(LEAD)
-  source        String?   @db.VarChar(200)
-  totalRevenue  Decimal?  @default(0) @map("total_revenue") @db.Decimal(15, 2)
-  metadata      Json?     @db.JsonB
-  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime  @updatedAt @map("updated_at") @db.Timestamptz
-  deletedAt     DateTime? @map("deleted_at") @db.Timestamptz
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  task    Task?   @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  organizationId String       @map("organization_id") @db.Uuid
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  contacts       Contact[]
-  projects       Project[]
-  invoices       Invoice[]
-  orders         Order[]
-
-  @@index([organizationId])
-  @@index([status])
-  @@index([email])
-  @@map("clients")
+  @@map("activity_logs")
 }
 
-model Contact {
-  id          String   @id @default(uuid()) @db.Uuid
-  firstName   String?  @map("first_name") @db.VarChar(150)
-  lastName    String?  @map("last_name") @db.VarChar(150)
-  email       String?  @db.VarChar(320)
-  phone       String?  @db.VarChar(30)
-  position    String?  @db.VarChar(200)
-  department  String?  @db.VarChar(200)
-  isPrimary   Boolean  @default(false) @map("is_primary")
-  status      ContactStatus @default(ACTIVE)
-  notes       String?  @db.Text
-  metadata    Json?    @db.JsonB
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
+model Report {
+  id        String   @id @default(cuid())
+  name      String
+  type      String
+  filters   Json?
+  data      Json?
+  generatedById String @map("generated_by_id")
+  createdAt DateTime @default(now()) @map("created_at")
 
-  clientId    String   @map("client_id") @db.Uuid
-  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  generatedBy User @relation(fields: [generatedById], references: [id], onDelete: Cascade)
 
-  @@index([clientId])
-  @@index([email])
-  @@map("contacts")
+  @@map("reports")
 }
-
-// ══════════════════════════════════════════════════════════════
-// INVOICING: Invoices, Payments, Expenses
-// ══════════════════════════════════════════════════════════════
 
 model Invoice {
-  id            String   @id @default(uuid()) @db.Uuid
-  number        String   @unique @db.VarChar(50)
-  description   String?  @db.Text
-  subtotal      Decimal  @db.Decimal(15, 2)
-  taxRate       Decimal? @default(0) @map("tax_rate") @db.Decimal(5, 2)
-  taxAmount     Decimal? @default(0) @map("tax_amount") @db.Decimal(15, 2)
-  discount      Decimal? @default(0) @db.Decimal(15, 2)
-  total         Decimal  @db.Decimal(15, 2)
-  currency      String   @default("RON") @db.VarChar(3)
-  status        InvoiceStatus @default(DRAFT)
-  issuedDate    DateTime? @map("issued_date") @db.Date
-  dueDate       DateTime? @map("due_date") @db.Date
-  paidAt        DateTime? @map("paid_at") @db.Timestamptz
-  notes         String?  @db.Text
-  metadata      Json?    @db.JsonB
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  id        String   @id @default(cuid())
+  projectId String   @map("project_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  organizationId String       @map("organization_id") @db.Uuid
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  clientId       String       @map("client_id") @db.Uuid
-  client         Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  projectId      String?      @map("project_id") @db.Uuid
-  project        Project?     @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  items          InvoiceItem[]
-  payments       Payment[]
-
-  @@index([organizationId])
-  @@index([clientId])
-  @@index([projectId])
-  @@index([status])
-  @@index([number])
   @@map("invoices")
 }
 
-model InvoiceItem {
-  id          String   @id @default(uuid()) @db.Uuid
-  description String   @db.Text
-  quantity    Decimal  @db.Decimal(10, 2)
-  unitPrice   Decimal  @map("unit_price") @db.Decimal(15, 2)
-  total       Decimal  @db.Decimal(15, 2)
-  sortOrder   Int      @default(0) @map("sort_order")
-
-  invoiceId   String   @map("invoice_id") @db.Uuid
-  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-
-  @@index([invoiceId])
-  @@map("invoice_items")
-}
-
-model Payment {
-  id            String   @id @default(uuid()) @db.Uuid
-  amount        Decimal  @db.Decimal(15, 2)
-  method        PaymentMethod @default(BANK_TRANSFER)
-  status        PaymentStatus @default(PENDING)
-  transactionId String?  @map("transaction_id") @db.VarChar(300)
-  gateway       String?  @db.VarChar(50)
-  gatewayResponse Json?  @map("gateway_response") @db.JsonB
-  paidAt        DateTime? @map("paid_at") @db.Timestamptz
-  notes         String?  @db.Text
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  invoiceId     String   @map("invoice_id") @db.Uuid
-  invoice       Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-
-  @@index([invoiceId])
-  @@index([status])
-  @@map("payments")
-}
-
-model Expense {
-  id          String   @id @default(uuid()) @db.Uuid
-  description String   @db.Text
-  amount      Decimal  @db.Decimal(15, 2)
-  currency    String   @default("RON") @db.VarChar(3)
-  category    String?  @db.VarChar(100)
-  expenseDate DateTime? @map("expense_date") @db.Date
-  receiptUrl  String?  @map("receipt_url") @db.Text
-  metadata    Json?    @db.JsonB
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId String @map("organization_id") @db.Uuid
-
-  @@index([organizationId])
-  @@index([expenseDate])
-  @@map("expenses")
-}
-
-// ══════════════════════════════════════════════════════════════
-// E-COMMERCE: Products, Categories, Orders, Carts
-// ══════════════════════════════════════════════════════════════
-
-model ProductCategory {
-  id             String   @id @default(uuid()) @db.Uuid
-  name           String   @db.VarChar(300)
-  slug           String   @db.VarChar(200)
-  description    String?  @db.Text
-  image          String?  @db.Text
-  parentId       String?  @map("parent_id") @db.Uuid
-  sortOrder      Int      @default(0) @map("sort_order")
-  isActive       Boolean  @default(true) @map("is_active")
-  metadata       Json?    @db.JsonB
-  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId String          @map("organization_id") @db.Uuid
-  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  parent         ProductCategory? @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
-
-  children       ProductCategory[] @relation("CategoryTree")
-  products       Product[]
-  attributes     ProductCategoryAttribute[]  @relation("ProductCategoryAttributes")
-
-  @@unique([slug, organizationId])
-  @@index([organizationId])
-  @@index([parentId])
-  @@map("product_categories")
-}
-
-model Product {
-  id              String   @id @default(uuid()) @db.Uuid
-  name            String   @db.VarChar(500)
-  slug            String   @db.VarChar(300)
-  description     String?  @db.Text
-  shortDescription String? @map("short_description") @db.VarChar(1000)
-  basePrice       Decimal? @map("base_price") @db.Decimal(15, 2)
-  costPrice       Decimal? @map("cost_price") @db.Decimal(15, 2)
-  sku             String?  @db.VarChar(100)
-  barcode         String?  @db.VarChar(100)
-  quantity        Int      @default(0)
-  weight          Decimal? @db.Decimal(10, 3)
-  dimensions      Json?    @db.JsonB // { length, width, height, unit }
-  mainImage       String?  @map("main_image") @db.Text
-  images          String[] @default([]) @db.Text
-  isDigital       Boolean  @default(false) @map("is_digital")
-  isActive        Boolean  @default(true) @map("is_active")
-  isFeatured      Boolean  @default(false) @map("is_featured")
-  metadata        Json?    @db.JsonB
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-  deletedAt       DateTime? @map("deleted_at") @db.Timestamptz
-
-  organizationId  String          @map("organization_id") @db.Uuid
-  organization    Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  categoryId      String?         @map("category_id") @db.Uuid
-  category        ProductCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-
-  variants        ProductVariant[]  @relation("ProductVariants")
-  cartItems       CartItem[]
-  orderItems      OrderItem[]
-  reviews         ProductReview[]
-  productImages   ProductImage[]  @relation("ProductImages")
-  bundleProducts  BundleProduct[]  @relation("BundleProducts")
-  bundles         BundleProduct[]  @relation("BundleParent")
-
-  @@unique([slug, organizationId])
-  @@index([organizationId])
-  @@index([categoryId])
-  @@index([isActive])
-  @@index([basePrice])
-  @@map("products")
-}
-
-model ProductReview {
-  id          String   @id @default(uuid()) @db.Uuid
-  rating      Int      @default(5)
-  title       String?  @db.VarChar(300)
-  content     String?  @db.Text
-  isVerified  Boolean  @default(false) @map("is_verified")
-  isApproved  Boolean  @default(false) @map("is_approved")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  productId   String   @map("product_id") @db.Uuid
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  userId      String?  @map("user_id") @db.Uuid
-  user        User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([productId])
-  @@index([userId])
-  @@index([rating])
-  @@map("product_reviews")
-}
-
-model ProductImage {
-  id          String   @id @default(uuid()) @db.Uuid
-  url         String   @db.Text
-  alt         String?  @db.VarChar(500)
-  width       Int?
-  height      Int?
-  sortOrder   Int      @default(0) @map("sort_order")
-  isPrimary   Boolean  @default(false) @map("is_primary")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  productId   String   @map("product_id") @db.Uuid
-  product     Product  @relation("ProductImages", fields: [productId], references: [id], onDelete: Cascade)
-
-  @@index([productId])
-  @@map("product_images")
-}
-
-model BundleProduct {
-  id          String   @id @default(uuid()) @db.Uuid
-  productId   String   @map("product_id") @db.Uuid
-  bundleId    String   @map("bundle_id") @db.Uuid
-  quantity    Int      @default(1)
-  sortOrder   Int      @default(0) @map("sort_order")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  product     Product  @relation("BundleProducts", fields: [productId], references: [id], onDelete: Cascade)
-  bundle      Product  @relation("BundleParent", fields: [bundleId], references: [id], onDelete: Cascade)
-
-  @@index([productId])
-  @@index([bundleId])
-  @@map("bundle_products")
-}
-
-model ProductCategoryAttribute {
-  categoryId    String @map("category_id") @db.Uuid
-  attributeId   String @map("attribute_id") @db.Uuid
-  isRequired    Boolean @default(false) @map("is_required")
-  sortOrder     Int @default(0) @map("sort_order")
-
-  category      ProductCategory @relation("ProductCategoryAttributes", fields: [categoryId], references: [id], onDelete: Cascade)
-  attribute     ProductAttribute @relation("CategoryLinks", fields: [attributeId], references: [id], onDelete: Cascade)
-
-  @@id([categoryId, attributeId])
-  @@map("product_category_attributes")
-}
-
 model ProductAttribute {
-  id            String   @id @default(uuid()) @db.Uuid
-  organizationId String  @map("organization_id") @db.Uuid
-  name          String   @db.VarChar(200)
-  slug          String   @db.VarChar(200)
-  type          String   @db.VarChar(50) // select, multiselect, color, size, text, number, boolean
-  isGlobal      Boolean  @default(false) @map("is_global")
-  isFilterable  Boolean  @default(false) @map("is_filterable")
-  isRequired    Boolean  @default(false) @map("is_required")
-  sortOrder     Int      @default(0) @map("sort_order")
-  metadata      Json?    @db.JsonB
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  id   String @id @default(cuid())
+  name String
 
-  productAttributeValues   ProductAttributeValue[]     @relation("ProductAttributeValues")
-  productVariantAttributes ProductVariantAttribute[]   @relation("ProductVariantAttributes")
-  orderItemAttributes      OrderItemAttribute[]        @relation("OrderItemAttribute")
-  categoryLinks            ProductCategoryAttribute[]  @relation("CategoryLinks")
+  values             ProductAttributeValue[]
+  variantAttributes  ProductVariantAttribute[]
 
-  @@unique([slug, organizationId])
-  @@index([organizationId])
-  @@index([type])
   @@map("product_attributes")
 }
 
 model ProductAttributeValue {
-  id            String   @id @default(uuid()) @db.Uuid
-  attributeId   String   @map("attribute_id") @db.Uuid
-  value         String   @db.VarChar(500)
-  label         String?  @db.VarChar(500)
-  color         String?  @db.VarChar(50)
-  sortOrder     Int      @default(0) @map("sort_order")
-  metadata      Json?    @db.JsonB
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  id          String @id @default(cuid())
+  attributeId String @map("attribute_id")
+  value       String
 
-  attribute     ProductAttribute @relation("ProductAttributeValues", fields: [attributeId], references: [id], onDelete: Cascade)
+  productAttribute ProductAttribute @relation(fields: [attributeId], references: [id])
 
-  ProductVariantAttribute      ProductVariantAttribute[]  @relation("fk_variant_attr_value")
-  OrderItemAttribute           OrderItemAttribute[]       @relation("fk_order_item_attr_value")
-
-  @@index([attributeId])
   @@map("product_attribute_values")
 }
 
-// ══════════════════════════════════════════════════════════════
-// ORDERS
-// ══════════════════════════════════════════════════════════════
+model ProductVariantAttribute {
+  id                     String                      @id @default(cuid())
+  productVariantId       String                      @map("product_variant_id")
+  attributeId            String                      @map("attribute_id")
+  valueId                String?                     @map("value_id")
+  productAttributeValue  ProductAttributeValue?      @relation("fk_variant_attr_value", fields: [valueId], references: [id], onDelete: SetNull)
+  productAttribute       ProductAttribute            @relation(fields: [attributeId], references: [id])
 
-model OrderItemAttribute {
-  id          String  @id @default(uuid()) @db.Uuid
-  itemId      String  @map("item_id") @db.Uuid
-  attributeId String  @map("attribute_id") @db.Uuid
-  valueId     String? @map("value_id") @db.Uuid
-  value       String  @db.VarChar(500)
-
-  item         OrderItem           @relation("OrderItemAttributes", fields: [itemId], references: [id], onDelete: Cascade)
-  attribute    ProductAttribute    @relation("OrderItemAttribute", fields: [attributeId], references: [id], onDelete: Cascade)
-  valueObj     ProductAttributeValue? @relation(fields: [valueId], references: [id], onDelete: SetNull, map: "fk_order_item_attr_value")
-
-  @@index([itemId])
-  @@index([attributeId])
-  @@map("order_item_attributes")
-}
-
-model CartItem {
-  id        String   @id @default(uuid()) @db.Uuid
-  quantity  Int      @default(1)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  productId String   @map("product_id") @db.Uuid
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  variantId String?  @map("variant_id") @db.Uuid
-  variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
-  userId    String?  @map("user_id") @db.Uuid
-  user      User?    @relation("CartItemUser", fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([productId])
-  @@index([variantId])
-  @@index([userId])
-  @@map("cart_items")
+  @@map("product_variant_attributes")
 }
 
 model Order {
-  id              String   @id @default(uuid()) @db.Uuid
-  number          String   @unique @db.VarChar(50)
-  status          OrderStatus @default(PENDING)
-  subtotal        Decimal  @db.Decimal(15, 2)
-  shippingCost    Decimal  @default(0) @map("shipping_cost") @db.Decimal(15, 2)
-  discount        Decimal  @default(0) @db.Decimal(15, 2)
-  tax             Decimal  @default(0) @db.Decimal(15, 2)
-  total           Decimal  @db.Decimal(15, 2)
-  currency        String   @default("RON") @db.VarChar(3)
-  notes           String?  @db.Text
-  metadata        Json?    @db.JsonB
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  organizationId  String       @map("organization_id") @db.Uuid
-  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  clientId        String?      @map("client_id") @db.Uuid
-  client          Client?      @relation(fields: [clientId], references: [id], onDelete: SetNull)
-  userId          String?      @map("user_id") @db.Uuid
-  user            User?        @relation("OrderUser", fields: [userId], references: [id], onDelete: SetNull)
+  items OrderItem[]
 
-  items           OrderItem[]
-  shipping        Shipping?
-
-  @@index([organizationId])
-  @@index([clientId])
-  @@index([status])
-  @@index([number])
-  @@index([createdAt])
   @@map("orders")
 }
 
 model OrderItem {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @db.VarChar(500)
-  quantity    Int      @default(1)
-  unitPrice   Decimal  @map("unit_price") @db.Decimal(15, 2)
-  total       Decimal  @db.Decimal(15, 2)
-  metadata    Json?    @db.JsonB
+  id      String  @id @default(cuid())
+  orderId String  @map("order_id")
 
-  orderId     String   @map("order_id") @db.Uuid
-  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId   String?  @map("product_id") @db.Uuid
-  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
-  variantId   String?  @map("variant_id") @db.Uuid
-  variant     ProductVariant? @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  order    Order               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  attributes OrderItemAttribute[]
 
-  attributes  OrderItemAttribute[]  @relation("OrderItemAttributes")
-
-  @@index([orderId])
-  @@index([productId])
-  @@index([variantId])
   @@map("order_items")
 }
 
-model Shipping {
-  id              String   @id @default(uuid()) @db.Uuid
-  carrier         String?  @db.VarChar(200)
-  trackingNumber  String?  @map("tracking_number") @db.VarChar(200)
-  status          ShippingStatus @default(PENDING)
-  addressLine1    String?  @map("address_line1") @db.VarChar(500)
-  addressLine2    String?  @map("address_line2") @db.VarChar(500)
-  city            String?  @db.VarChar(200)
-  state           String?  @db.VarChar(200)
-  zipCode         String?  @map("zip_code") @db.VarChar(50)
-  country         String?  @db.VarChar(100)
-  estimatedAt     DateTime? @map("estimated_at") @db.Timestamptz
-  shippedAt       DateTime? @map("shipped_at") @db.Timestamptz
-  deliveredAt     DateTime? @map("delivered_at") @db.Timestamptz
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
+model OrderItemAttribute {
+  id            String                    @id @default(cuid())
+  orderItemId   String                    @map("order_item_id")
+  attributeId   String                    @map("attribute_id")
+  valueId       String?                   @map("value_id")
+  productAttributeValue ProductAttributeValue? @relation("fk_order_item_attr_value", fields: [valueId], references: [id], onDelete: SetNull)
+  orderItem     OrderItem                 @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  productAttribute ProductAttribute       @relation(fields: [attributeId], references: [id])
 
-  orderId         String   @unique @map("order_id") @db.Uuid
-  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-
-  @@map("shippings")
+  @@map("order_item_attributes")
 }
 
-// ══════════════════════════════════════════════════════════════
-// CMS: Pages, Blogs, Media, Forms
-// ══════════════════════════════════════════════════════════════
-
-model CMSPage {
-  id            String   @id @default(uuid()) @db.Uuid
-  title         String   @db.VarChar(500)
-  slug          String   @db.VarChar(300)
-  content       String?  @db.Text
-  excerpt       String?  @db.Text
-  template      String?  @db.VarChar(100)
-  status        CMSStatus @default(DRAFT)
-  metaTitle     String?  @map("meta_title") @db.VarChar(300)
-  metaDescription String? @map("meta_description") @db.Text
-  publishedAt   DateTime? @map("published_at") @db.Timestamptz
-  isHomepage    Boolean  @default(false) @map("is_homepage")
-  sortOrder     Int      @default(0) @map("sort_order")
-  metadata      Json?    @db.JsonB
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId String       @map("organization_id") @db.Uuid
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  parentId       String?      @map("parent_id") @db.Uuid
-  parent         CMSPage?     @relation("PageTree", fields: [parentId], references: [id], onDelete: SetNull)
-
-  children       CMSPage[]    @relation("PageTree")
-
-  @@unique([slug, organizationId])
-  @@index([organizationId])
-  @@index([parentId])
-  @@index([status])
-  @@map("cms_pages")
+model Category {
+  id        String      @id @default(cuid())
+  name      String
+  products  Product[]   @relation("CategoryProducts")
+  blogPosts BlogPost[]  @relation("CategoryBlogPosts")
 }
 
-model CMSBlock {
-  id            String   @id @default(uuid()) @db.Uuid
-  name          String   @db.VarChar(200)
-  slug          String   @db.VarChar(200)
-  content       Json     @db.JsonB
-  type          String   @db.VarChar(50) // hero, features, cta, gallery, custom
-  isGlobal      Boolean  @default(false) @map("is_global")
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+model Product {
+  id         String   @id @default(cuid())
+  name       String
+  categoryId String   @map("category_id")
+  category   Category @relation("CategoryProducts", fields: [categoryId], references: [id])
 
-  organizationId String   @map("organization_id") @db.Uuid
-
-  @@unique([slug, organizationId])
-  @@index([organizationId])
-  @@map("cms_blocks")
-}
-
-model Media {
-  id          String   @id @default(uuid()) @db.Uuid
-  fileName    String   @map("file_name") @db.VarChar(500)
-  originalName String? @map("original_name") @db.VarChar(500)
-  mimeType    String   @map("mime_type") @db.VarChar(100)
-  size        Int
-  width       Int?
-  height      Int?
-  url         String   @db.Text
-  thumbnailUrl String? @map("thumbnail_url") @db.Text
-  alt         String?  @db.VarChar(500)
-  folder      String?  @db.VarChar(300)
-  tags        String[] @default([]) @db.VarChar(100)
-  metadata    Json?    @db.JsonB
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId String @map("organization_id") @db.Uuid
-  uploadedById   String? @map("uploaded_by_id") @db.Uuid
-
-  @@index([organizationId])
-  @@index([folder])
-  @@index([mimeType])
-  @@index([tags])
-  @@map("media")
-}
-
-model Form {
-  id              String   @id @default(uuid()) @db.Uuid
-  name            String   @db.VarChar(300)
-  slug            String   @db.VarChar(200)
-  description     String?  @db.Text
-  fields          Json     @db.JsonB
-  redirectUrl     String?  @map("redirect_url") @db.Text
-  emailNotifications String[] @default([]) @map("email_notifications") @db.VarChar(320)
-  webhookUrl      String?  @map("webhook_url") @db.Text
-  isActive        Boolean  @default(true) @map("is_active")
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId  String       @map("organization_id") @db.Uuid
-  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  submissions     FormSubmission[]
-
-  @@unique([slug, organizationId])
-  @@index([organizationId])
-  @@map("forms")
-}
-
-model FormSubmission {
-  id          String   @id @default(uuid()) @db.Uuid
-  data        Json     @db.JsonB
-  ipAddress   String?  @map("ip_address") @db.VarChar(45)
-  userAgent   String?  @map("user_agent") @db.Text
-  isRead      Boolean  @default(false) @map("is_read")
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  formId      String   @map("form_id") @db.Uuid
-  form        Form     @relation(fields: [formId], references: [id], onDelete: Cascade)
-
-  @@index([formId])
-  @@index([createdAt])
-  @@map("form_submissions")
+  @@map("products")
 }
 
 model BlogPost {
-  id            String   @id @default(uuid()) @db.Uuid
-  title         String   @db.VarChar(500)
-  slug          String   @db.VarChar(300)
-  content       String?  @db.Text
-  excerpt       String?  @db.Text
-  featuredImage String?  @map("featured_image") @db.Text
-  status        BlogStatus @default(DRAFT)
-  metaTitle     String?  @map("meta_title") @db.VarChar(300)
-  metaDescription String? @map("meta_description") @db.Text
-  tags          String[] @default([]) @db.VarChar(100)
-  publishedAt   DateTime? @map("published_at") @db.Timestamptz
-  metadata      Json?    @db.JsonB
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
+  id              String          @id @default(cuid())
+  title           String
+  blogCategoryId  String?         @map("blog_category_id")
+  blogCategory    BlogCategory?   @relation("BlogPostCategory", fields: [blogCategoryId], references: [id])
+  categoryId      String          @map("category_id")
+  category        Category        @relation("CategoryBlogPosts", fields: [categoryId], references: [id])
 
-  organizationId String       @map("organization_id") @db.Uuid
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  authorId       String?      @map("author_id") @db.Uuid
-  categoryId     String?      @map("category_id") @db.Uuid
-
-  @@unique([slug, organizationId])
-  @@index([organizationId])
-  @@index([status])
-  @@index([publishedAt])
-  @@index([tags])
   @@map("blog_posts")
 }
 
 model BlogCategory {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @db.VarChar(200)
-  slug        String   @db.VarChar(200)
-  description String?  @db.Text
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  id    String      @id @default(cuid())
+  name  String
+  posts BlogPost[]  @relation("BlogPostCategory")
 
-  organizationId String @map("organization_id") @db.Uuid
-
-  @@unique([slug, organizationId])
-  @@index([organizationId])
   @@map("blog_categories")
 }
-
-// ══════════════════════════════════════════════════════════════
-// EVENTS
-// ══════════════════════════════════════════════════════════════
-
-model Event {
-  id              String   @id @default(uuid()) @db.Uuid
-  name            String   @db.VarChar(500)
-  slug            String   @db.VarChar(300)
-  description     String?  @db.Text
-  location        String?  @db.Text
-  startDate       DateTime @map("start_date") @db.Timestamptz
-  endDate         DateTime? @map("end_date") @db.Timestamptz
-  timezone        String?  @default("UTC") @db.VarChar(50)
-  capacity        Int?
-  status          EventStatus @default(DRAFT)
-  image           String?  @db.Text
-  isPublic        Boolean  @default(false) @map("is_public")
-  metadata        Json?    @db.JsonB
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId  String       @map("organization_id") @db.Uuid
-  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  registrations   EventRegistration[]
-
-  @@unique([slug, organizationId])
-  @@index([organizationId])
-  @@index([startDate])
-  @@index([status])
-  @@map("events")
-}
-
-model EventRegistration {
-  id          String   @id @default(uuid()) @db.Uuid
-  firstName   String   @map("first_name") @db.VarChar(150)
-  lastName    String   @map("last_name") @db.VarChar(150)
-  email       String   @db.VarChar(320)
-  phone       String?  @db.VarChar(30)
-  company     String?  @db.VarChar(300)
-  notes       String?  @db.Text
-  status      RegistrationStatus @default(PENDING)
-  metadata    Json?    @db.JsonB
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  eventId     String   @map("event_id") @db.Uuid
-  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  userId      String?  @map("user_id") @db.Uuid
-
-  @@index([eventId])
-  @@index([status])
-  @@index([email])
-  @@map("event_registrations")
-}
-
-// ══════════════════════════════════════════════════════════════
-// WORKFLOWS / AUTOMATIONS
-// ══════════════════════════════════════════════════════════════
-
-model Workflow {
-  id            String   @id @default(uuid()) @db.Uuid
-  name          String   @db.VarChar(300)
-  description   String?  @db.Text
-  trigger       Json     @db.JsonB
-  actions       Json[]   @db.JsonB
-  isActive      Boolean  @default(true) @map("is_active")
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId String       @map("organization_id") @db.Uuid
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  @@index([organizationId])
-  @@map("workflows")
-}
-
-// ══════════════════════════════════════════════════════════════
-// NOTIFICATIONS
-// ══════════════════════════════════════════════════════════════
-
-model Notification {
-  id          String   @id @default(uuid()) @db.Uuid
-  title       String   @db.VarChar(300)
-  body        String?  @db.Text
-  type        String   @db.VarChar(100)
-  channel     NotificationChannel @default(IN_APP)
-  status      NotificationStatus @default(PENDING)
-  metadata    Json?    @db.JsonB
-  readAt      DateTime? @map("read_at") @db.Timestamptz
-  sentAt      DateTime? @map("sent_at") @db.Timestamptz
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  userId      String   @map("user_id") @db.Uuid
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([status])
-  @@index([type])
-  @@index([createdAt])
-  @@map("notifications")
-}
-
-model NotificationTemplate {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @db.VarChar(200)
-  subject     String   @db.VarChar(500)
-  body        String   @db.Text
-  channel     NotificationChannel @default(EMAIL)
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId String @map("organization_id") @db.Uuid
-
-  @@index([organizationId])
-  @@map("notification_templates")
-}
-
-// ══════════════════════════════════════════════════════════════
-// AI: Configurations, Sessions, Prompts, Agents
-// ══════════════════════════════════════════════════════════════
-
-model AIConfig {
-  id              String   @id @default(uuid()) @db.Uuid
-  name            String   @db.VarChar(200)
-  provider        AIProvider @default(OPENAI)
-  model           String   @db.VarChar(100)
-  modelType       AIModelType @default(CHAT) @map("model_type")
-  apiKey          String   @map("api_key") @db.VarChar(500)
-  apiEndpoint     String?  @map("api_endpoint") @db.Text
-  temperature     Float?   @default(0.7)
-  maxTokens       Int?     @map("max_tokens")
-  systemPrompt    String?  @map("system_prompt") @db.Text
-  defaultSettings Json?    @map("default_settings") @db.JsonB
-  isActive        Boolean  @default(true) @map("is_active")
-  priority        Int      @default(1)
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId  String       @map("organization_id") @db.Uuid
-  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  sessions        AISession[]
-
-  @@index([organizationId])
-  @@index([provider])
-  @@map("ai_configs")
-}
-
-model AISession {
-  id            String   @id @default(uuid()) @db.Uuid
-  title         String?  @db.VarChar(500)
-  systemPrompt  String?  @map("system_prompt") @db.Text
-  totalTokens   Int      @default(0) @map("total_tokens")
-  totalCost     Float    @default(0) @map("total_cost")
-  metadata      Json?    @db.JsonB
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId String       @map("organization_id") @db.Uuid
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  userId         String?      @map("user_id") @db.Uuid
-  user           User?        @relation("AISessionUser", fields: [userId], references: [id], onDelete: SetNull)
-  configId       String?      @map("config_id") @db.Uuid
-  config         AIConfig?    @relation(fields: [configId], references: [id], onDelete: SetNull)
-
-  messages       AIMessage[]
-
-  @@index([organizationId])
-  @@index([userId])
-  @@index([configId])
-  @@index([createdAt])
-  @@map("ai_sessions")
-}
-
-model AIMessage {
-  id          String   @id @default(uuid()) @db.Uuid
-  role        String   @db.VarChar(50) // user, assistant, system, tool
-  content     String   @db.Text
-  tokens      Int?
-  metadata    Json?    @db.JsonB
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  sessionId   String   @map("session_id") @db.Uuid
-  session     AISession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-  @@index([sessionId])
-  @@index([createdAt])
-  @@map("ai_messages")
-}
-
-model AIPrompt {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @db.VarChar(200)
-  content     String   @db.Text
-  variables   String[] @default([]) @db.VarChar(100)
-  category    String?  @db.VarChar(100)
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId String       @map("organization_id") @db.Uuid
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  @@index([organizationId])
-  @@index([category])
-  @@map("ai_prompts")
-}
-
-model AIAgent {
-  id              String   @id @default(uuid()) @db.Uuid
-  name            String   @db.VarChar(200)
-  description     String?  @db.Text
-  instructions    String   @db.Text
-  tools           String[] @default([]) @db.VarChar(100)
-  model           String?  @db.VarChar(100)
-  temperature     Float?   @default(0.7)
-  isActive        Boolean  @default(true) @map("is_active")
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId  String       @map("organization_id") @db.Uuid
-  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  @@index([organizationId])
-  @@map("ai_agents")
-}
-
-model AIMemory {
-  id          String   @id @default(uuid()) @db.Uuid
-  key         String   @db.VarChar(300)
-  value       String   @db.Text
-  category    String?  @db.VarChar(100)
-  expiresAt   DateTime? @map("expires_at") @db.Timestamptz
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId String       @map("organization_id") @db.Uuid
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  userId         String?      @map("user_id") @db.Uuid
-  user           User?        @relation("AIMemoryUser", fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([organizationId])
-  @@index([userId])
-  @@index([key])
-  @@index([category])
-  @@map("ai_memories")
-}
-
-model AIDocument {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @db.VarChar(500)
-  content     String   @db.Text
-  embedding   String?  @db.Text // vector stored as string
-  sourceUrl   String?  @map("source_url") @db.Text
-  metadata    Json?    @db.JsonB
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  organizationId String       @map("organization_id") @db.Uuid
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  @@index([organizationId])
-  @@index([name])
-  @@map("ai_documents")
-}
-
-// ══════════════════════════════════════════════════════════════
-// AUDIT & COMPLIANCE
-// ══════════════════════════════════════════════════════════════
-
-model AuditLog {
-  id            String   @id @default(uuid()) @db.Uuid
-  action        AuditAction
-  entity        String   @db.VarChar(100)
-  entityId      String?  @map("entity_id") @db.Uuid
-  changes       Json?    @db.JsonB
-  ipAddress     String?  @map("ip_address") @db.VarChar(45)
-  userAgent     String?  @map("user_agent") @db.Text
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  organizationId String   @map("organization_id") @db.Uuid
-  userId         String?  @map("user_id") @db.Uuid
-  user           User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([organizationId])
-  @@index([userId])
-  @@index([entity])
-  @@index([entityId])
-  @@index([action])
-  @@index([createdAt])
-  @@map("audit_logs")
-}
-
-// ══════════════════════════════════════════════════════════════
-// FILE MANAGEMENT
-// ══════════════════════════════════════════════════════════════
-
-model File {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @db.VarChar(500)
-  originalName String? @map("original_name") @db.VarChar(500)
-  mimeType    String   @map("mime_type") @db.VarChar(100)
-  size        Int
-  url         String   @db.Text
-  folderId    String?  @map("folder_id") @db.Uuid
-  tags        String[] @default([]) @db.VarChar(100)
-  metadata    Json?    @db.JsonB
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
-  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz
-
-  organizationId String @map("organization_id") @db.Uuid
-  uploadedById   String? @map("uploaded_by_id") @db.Uuid
-
-  versions      FileVersion[]
-
-  @@index([organizationId])
-  @@index([folderId])
-  @@index([tags])
-  @@index([deletedAt])
-  @@map("files")
-}
-
-model FileVersion {
-  id        String   @id @default(uuid()) @db.Uuid
-  version   Int
-  url       String   @db.Text
-  size      Int
-  hash      String?  @db.VarChar(255)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  fileId String @map("file_id") @db.Uuid
-  file   File   @relation(fields: [fileId], references: [id], onDelete: Cascade)
-  userId String @map("user_id") @db.Uuid
-
-  @@index([fileId])
-  @@map("file_versions")
-}
-
-// ══════════════════════════════════════════════════════════════
-// ANALYTICS
-// ══════════════════════════════════════════════════════════════
-
-model AnalyticsEvent {
-  id           String   @id @default(uuid()) @db.Uuid
-  type         String   @db.VarChar(100)
-  category     String?  @db.VarChar(100)
-  label        String?  @db.VarChar(500)
-  value        Decimal? @db.Decimal(15, 2)
-  properties   Json?    @db.JsonB
-  sessionId    String?  @map("session_id") @db.VarChar(200)
-  visitorId    String?  @map("visitor_id") @db.VarChar(200)
-  ipAddress    String?  @map("ip_address") @db.VarChar(45)
-  userAgent    String?  @map("user_agent") @db.Text
-  referrer     String?  @db.Text
-  pageUrl      String?  @map("page_url") @db.Text
-  country      String?  @db.VarChar(2)
-  city         String?  @db.VarChar(200)
-  deviceType   String?  @map("device_type") @db.VarChar(20)
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  organizationId String @map("organization_id") @db.Uuid
-  userId         String? @map("user_id") @db.Uuid
-
-  @@index([organizationId])
-  @@index([type])
-  @@index([category])
-  @@index([createdAt])
-  @@index([sessionId])
-  @@index([visitorId])
-  @@map("analytics_events")
-}
-
-model AnalyticsReport {
-  id          String   @id @default(uuid()) @db.Uuid
-  name        String   @db.VarChar(300)
-  type        String   @db.VarChar(100)
-  query       Json     @db.JsonB
-  result      Json?    @db.JsonB
-  isScheduled Boolean  @default(false) @map("is_scheduled")
-  cronExpression String? @map("cron_expression") @db.VarChar(100)
-  recipients  String[] @default([]) @db.VarChar(320)
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId String @map("organization_id") @db.Uuid
-  createdById    String @map("created_by_id") @db.Uuid
-
-  @@index([organizationId])
-  @@map("analytics_reports")
-}
-
-// ══════════════════════════════════════════════════════════════
-// SYSTEM: API Keys, Webhooks, Feature Flags
-// ══════════════════════════════════════════════════════════════
-
-model ApiKey {
-  id            String    @id @default(uuid()) @db.Uuid
-  name          String    @db.VarChar(200)
-  key           String    @unique @db.VarChar(500)
-  keyPrefix     String    @map("key_prefix") @db.VarChar(20)
-  scopes        String[]  @default([]) @db.VarChar(50)
-  lastUsedAt    DateTime? @map("last_used_at") @db.Timestamptz
-  expiresAt     DateTime? @map("expires_at") @db.Timestamptz
-  revokedAt     DateTime? @map("revoked_at") @db.Timestamptz
-  ipRestrictions String[] @default([]) @map("ip_restrictions") @db.VarChar(45)
-  rateLimit     Int?      @map("rate_limit")
-  metadata      Json?     @db.JsonB
-  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime  @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId String       @map("organization_id") @db.Uuid
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  userId         String?      @map("user_id") @db.Uuid
-  user           User?        @relation("ApiKeyUser", fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([organizationId])
-  @@index([userId])
-  @@index([key])
-  @@map("api_keys")
-}
-
-model Webhook {
-  id          String   @id @default(uuid()) @db.Uuid
-  url         String   @db.Text
-  description String?  @db.Text
-  events      String[] @default([]) @db.VarChar(100)
-  secret      String?  @db.VarChar(500)
-  isActive    Boolean  @default(true) @map("is_active")
-  retryCount  Int      @default(3) @map("retry_count")
-  lastSentAt  DateTime? @map("last_sent_at") @db.Timestamptz
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId String @map("organization_id") @db.Uuid
-
-  deliveries WebhookDelivery[]
-
-  @@index([organizationId])
-  @@map("webhooks")
-}
-
-model WebhookDelivery {
-  id            String   @id @default(uuid()) @db.Uuid
-  event         String   @db.VarChar(100)
-  payload       Json     @db.JsonB
-  responseCode  Int?     @map("response_code")
-  responseBody  String?  @map("response_body") @db.Text
-  status        String   @default("PENDING") @db.VarChar(20)
-  attempts      Int      @default(1)
-  errorMessage  String?  @map("error_message") @db.Text
-  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
-  completedAt   DateTime? @map("completed_at") @db.Timestamptz
-
-  webhookId String  @map("webhook_id") @db.Uuid
-  webhook   Webhook @relation(fields: [webhookId], references: [id], onDelete: Cascade)
-
-  @@index([webhookId])
-  @@index([status])
-  @@map("webhook_deliveries")
-}
-
-model FeatureFlag {
-  id              String   @id @default(uuid()) @db.Uuid
-  name            String   @db.VarChar(200)
-  slug            String   @db.VarChar(200)
-  description     String?  @db.Text
-  enabled         Boolean  @default(false)
-  rules           Json?    @db.JsonB
-  percentageRollout Int?   @map("percentage_rollout")
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId String       @map("organization_id") @db.Uuid
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-
-  @@unique([slug, organizationId])
-  @@index([organizationId])
-  @@map("feature_flags")
-}
-
-// ══════════════════════════════════════════════════════════════
-// SEO: Redirects, SEO Meta Templates
-// ══════════════════════════════════════════════════════════════
-
-model Redirect {
-  id          String   @id @default(uuid()) @db.Uuid
-  source      String   @db.Text
-  destination String   @db.Text
-  statusCode  Int      @default(301) @map("status_code")
-  isRegex     Boolean  @default(false) @map("is_regex")
-  isActive    Boolean  @default(true) @map("is_active")
-  hitCount    Int      @default(0) @map("hit_count")
-  lastHitAt   DateTime? @map("last_hit_at") @db.Timestamptz
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId String @map("organization_id") @db.Uuid
-
-  @@index([organizationId])
-  @@index([source])
-  @@map("redirects")
-}
-
-// ══════════════════════════════════════════════════════════════
-// VIEWS: Materialized / Aggregated Views (managed via migration)
-// ══════════════════════════════════════════════════════════════
-
-model ViewDashboardStats {
-  id              String  @id @default(uuid()) @db.Uuid
-  organizationId  String  @map("organization_id") @db.Uuid
-  totalUsers      Int     @default(0) @map("total_users")
-  totalProjects   Int     @default(0) @map("total_projects")
-  totalOrders     Int     @default(0) @map("total_orders")
-  totalRevenue    Decimal @default(0) @map("total_revenue") @db.Decimal(15, 2)
-  totalAITokens   Int     @default(0) @map("total_ai_tokens")
-  activeProjects  Int     @default(0) @map("active_projects")
-  period          String  @db.VarChar(20)
-
-  @@map("view_dashboard_stats")
-}
-
-// ══════════════════════════════════════════════════════════════
-// ADDITIONAL MODELS FOR CORE FUNCTIONALITY
-// ══════════════════════════════════════════════════════════════
-
-model Integration {
-  id              String   @id @default(uuid()) @db.Uuid
-  type            IntegrationType @default(CUSTOM)
-  name            String   @db.VarChar(200)
-  credentials     Json?    @db.JsonB
-  settings        Json?    @db.JsonB
-  status          IntegrationStatus @default(PENDING)
-  lastSyncAt      DateTime? @map("last_sync_at") @db.Timestamptz
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId  String   @map("organization_id") @db.Uuid
-  userId          String?  @map("user_id") @db.Uuid
-  user            User?    @relation("IntegrationUser", fields: [userId], references: [id], onDelete: SetNull)
-
-  @@index([organizationId])
-  @@index([type])
-  @@index([status])
-  @@map("integrations")
-}
-
-model Subscription {
-  id              String   @id @default(uuid()) @db.Uuid
-  plan            String   @db.VarChar(100)
-  status          String   @db.VarChar(50)
-  currentPeriodStart DateTime? @map("current_period_start") @db.Timestamptz
-  currentPeriodEnd   DateTime? @map("current_period_end") @db.Timestamptz
-  trialEndAt      DateTime? @map("trial_end_at") @db.Timestamptz
-  canceledAt      DateTime? @map("canceled_at") @db.Timestamptz
-  stripeSubscriptionId String? @map("stripe_subscription_id") @db.VarChar(200)
-  metadata        Json?    @db.JsonB
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId  String @map("organization_id") @db.Uuid
-
-  @@unique([organizationId])
-  @@index([status])
-  @@index([stripeSubscriptionId])
-  @@map("subscriptions")
-}
-
-model InvoiceTemplate {
-  id              String   @id @default(uuid()) @db.Uuid
-  name            String   @db.VarChar(200)
-  content         Json     @db.JsonB
-  isDefault       Boolean  @default(false) @map("is_default")
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId  String @map("organization_id") @db.Uuid
-
-  @@index([organizationId])
-  @@map("invoice_templates")
-}
-
-model EmailTemplate {
-  id              String   @id @default(uuid()) @db.Uuid
-  name            String   @db.VarChar(200)
-  subject         String   @db.VarChar(500)
-  body            String   @db.Text
-  variables       String[] @default([]) @db.VarChar(100)
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId  String @map("organization_id") @db.Uuid
-
-  @@index([organizationId])
-  @@map("email_templates")
-}
-
-model SmsTemplate {
-  id              String   @id @default(uuid()) @db.Uuid
-  name            String   @db.VarChar(200)
-  body            String   @db.VarChar(1600)
-  variables       String[] @default([]) @db.VarChar(100)
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId  String @map("organization_id") @db.Uuid
-
-  @@index([organizationId])
-  @@map("sms_templates")
-}
-
-model UserPreference {
-  id              String   @id @default(uuid()) @db.Uuid
-  key             String   @db.VarChar(200)
-  value           Json     @db.JsonB
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  userId          String   @map("user_id") @db.Uuid
-
-  @@unique([userId, key])
-  @@index([userId])
-  @@map("user_preferences")
-}
-
-model Tag {
-  id              String   @id @default(uuid()) @db.Uuid
-  name            String   @db.VarChar(100)
-  slug            String   @db.VarChar(100)
-  color           String?  @db.VarChar(50)
-  entityType      String   @map("entity_type") @db.VarChar(50)
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  organizationId  String @map("organization_id") @db.Uuid
-
-  entityTags      EntityTag[]  @relation("EntityTagTag")
-
-  @@unique([slug, entityType, organizationId])
-  @@index([organizationId])
-  @@index([entityType])
-  @@map("tags")
-}
-
-model EntityTag {
-  id              String   @id @default(uuid()) @db.Uuid
-  entityId        String   @map("entity_id") @db.Uuid
-  entityType      String   @map("entity_type") @db.VarChar(50)
-
-  tagId           String   @map("tag_id") @db.Uuid
-  tag             Tag      @relation("EntityTagTag", fields: [tagId], references: [id], onDelete: Cascade)
-
-  @@unique([tagId, entityId, entityType])
-  @@index([entityId, entityType])
-  @@index([tagId])
-  @@map("entity_tags")
-}
-
-model Note {
-  id              String   @id @default(uuid()) @db.Uuid
-  title           String?  @db.VarChar(300)
-  content         String   @db.Text
-  entityId        String   @map("entity_id") @db.Uuid
-  entityType      String   @map("entity_type") @db.VarChar(50)
-  isPinned        Boolean  @default(false) @map("is_pinned")
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId  String @map("organization_id") @db.Uuid
-  userId          String @map("user_id") @db.Uuid
-
-  @@index([entityId, entityType])
-  @@index([organizationId])
-  @@index([userId])
-  @@map("notes")
-}
-
-model Role {
-  id              String   @id @default(uuid()) @db.Uuid
-  name            String   @db.VarChar(100)
-  slug            String   @db.VarChar(100)
-  description     String?  @db.Text
-  permissions     String[] @default([]) @db.VarChar(100)
-  isSystem        Boolean  @default(false) @map("is_system")
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId  String @map("organization_id") @db.Uuid
-
-  @@unique([slug, organizationId])
-  @@index([organizationId])
-  @@map("roles")
-}
-
-model Permission {
-  id              String   @id @default(uuid()) @db.Uuid
-  name            String   @db.VarChar(100)
-  slug            String   @unique @db.VarChar(100)
-  group           String?  @db.VarChar(50)
-  description     String?  @db.Text
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-
-  @@index([group])
-  @@map("permissions")
-}
-
-model Address {
-  id              String   @id @default(uuid()) @db.Uuid
-  label           String?  @db.VarChar(100) // Home, Work, Billing, Shipping
-  addressLine1    String   @map("address_line1") @db.VarChar(500)
-  addressLine2    String?  @map("address_line2") @db.VarChar(500)
-  city            String   @db.VarChar(200)
-  state           String?  @db.VarChar(200)
-  zipCode         String?  @map("zip_code") @db.VarChar(50)
-  country         String   @db.VarChar(100)
-  isDefault       Boolean  @default(false) @map("is_default")
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  entityId        String   @map("entity_id") @db.Uuid
-  entityType      String   @map("entity_type") @db.VarChar(50)
-  userId          String?  @map("user_id") @db.Uuid
-
-  @@index([entityId, entityType])
-  @@index([userId])
-  @@map("addresses")
-}
-
-model SocialLink {
-  id              String   @id @default(uuid()) @db.Uuid
-  platform        String   @db.VarChar(50)
-  url             String   @db.Text
-  label           String?  @db.VarChar(100)
-  sortOrder       Int      @default(0) @map("sort_order")
-
-  entityId        String   @map("entity_id") @db.Uuid
-  entityType      String   @map("entity_type") @db.VarChar(50)
-  organizationId  String   @map("organization_id") @db.Uuid
-
-  @@index([entityId, entityType])
-  @@index([organizationId])
-  @@map("social_links")
-}
-
-model SsoConfig {
-  id              String   @id @default(uuid()) @db.Uuid
-  provider        String   @db.VarChar(50) // GOOGLE, FACEBOOK, GITHUB, APPLE, SAML, OIDC
-  clientId        String?  @map("client_id") @db.VarChar(500)
-  clientSecret    String?  @map("client_secret") @db.VarChar(500)
-  issuerUrl       String?  @map("issuer_url") @db.Text
-  callbackUrl     String?  @map("callback_url") @db.Text
-  scopes          String[] @default([]) @db.VarChar(100)
-  isActive        Boolean  @default(false) @map("is_active")
-  metadata        Json?    @db.JsonB
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  organizationId  String @map("organization_id") @db.Uuid
-
-  @@index([organizationId])
-  @@index([provider])
-  @@map("sso_configs")
-}
-
-// ══════════════════════════════════════════════════════════════
-// PRODUCT VARIANT ATTRIBUTES (added for e-commerce attribute linking)
-// ══════════════════════════════════════════════════════════════
-
-model ProductVariantAttribute {
-  id          String  @id @default(uuid()) @db.Uuid
-  variantId   String  @map("variant_id") @db.Uuid
-  attributeId String  @map("attribute_id") @db.Uuid
-  valueId     String? @map("value_id") @db.Uuid
-  value       String  @db.VarChar(500)
-
-  variant     ProductVariant         @relation(fields: [variantId], references: [id], onDelete: Cascade)
-  attribute   ProductAttribute       @relation("ProductVariantAttributes", fields: [attributeId], references: [id], onDelete: Cascade)
-  valueObj    ProductAttributeValue? @relation(fields: [valueId], references: [id], onDelete: SetNull, map: "fk_variant_attr_value")
-
-  @@index([variantId])
-  @@index([attributeId])
-  @@index([valueId])
-  @@map("product_variant_attributes")
-}
-
-model ProductVariant {
-  id              String   @id @default(uuid()) @db.Uuid
-  productId       String   @map("product_id") @db.Uuid
-  sku             String?  @db.VarChar(100)
-  barcode         String?  @db.VarChar(100)
-  price           Decimal? @db.Decimal(15, 2)
-  compareAtPrice  Decimal? @map("compare_at_price") @db.Decimal(15, 2)
-  costPrice       Decimal? @map("cost_price") @db.Decimal(15, 2)
-  quantity        Int      @default(0)
-  isDefault       Boolean  @default(false) @map("is_default")
-  isActive        Boolean  @default(true) @map("is_active")
-  metadata        Json?    @db.JsonB
-  createdAt       DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz
-
-  product             Product                  @relation("ProductVariants", fields: [productId], references: [id], onDelete: Cascade)
-  attributes          ProductVariantAttribute[]
-  cartItems           CartItem[]
-  orderItems          OrderItem[]
-
-  @@index([productId])
-  @@index([sku])
-  @@map("product_variants")
-}
-
-// ══════════════════════════════════════════════════════════════
-// END OF SCHEMA
-// ══════════════════════════════════════════════════════════════
