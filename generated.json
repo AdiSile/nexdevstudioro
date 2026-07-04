@@ -1,6 +1,6 @@
 {
   "action": "file_reader",
   "action_input": {
-    "file_path": "package.json"
+    "file_path": "prisma/schema.prisma"
   }
 }

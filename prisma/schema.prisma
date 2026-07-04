@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -198,9 +199,8 @@ enum SubtaskStatus {
 model Subtask {
   id        String        @id @default(cuid())
   title     String
-  taskId    String        @map("task_id")
   status    SubtaskStatus @default(TODO)
-  position  Int           @default(0)
+  taskId    String        @map("task_id")
   createdAt DateTime      @default(now()) @map("created_at")
   updatedAt DateTime      @updatedAt @map("updated_at")
 
@@ -322,6 +322,8 @@ model ProductAttributeValue {
   value       String
 
   productAttribute ProductAttribute @relation(fields: [attributeId], references: [id])
+  variantAttributes ProductVariantAttribute[] @relation("fk_variant_attr_value")
+  orderItemAttributes OrderItemAttribute[] @relation("fk_order_item_attr_value")
 
   @@map("product_attribute_values")
 }
