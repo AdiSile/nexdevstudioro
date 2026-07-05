@@ -184,6 +184,14 @@ function resolveFooter(
   return footer;
 }
 
+/**
+ * Determines if an item should render as a non-interactive section header.
+ * Section headers have no href, no onClick, and no children.
+ */
+function isSectionHeader(item: SidebarNavItem): boolean {
+  return !item.href && !item.onClick && !item.children?.length;
+}
+
 // =============================================================================
 // Merge Refs Utility
 // =============================================================================
@@ -270,6 +278,7 @@ const SidebarItem = forwardRef<HTMLLIElement, SidebarItemProps>(
     const hasChildren = Boolean(item.children?.length);
     const active = isActive(pathname, item);
     const childActive = hasActiveChild(pathname, item);
+    const sectionHeader = isSectionHeader(item);
 
     // Expand submenu when a child becomes active
     useEffect(() => {
@@ -312,7 +321,7 @@ const SidebarItem = forwardRef<HTMLLIElement, SidebarItemProps>(
     // ── Keyboard handler ────────────────────────────────────────
     const handleKeyDown = useCallback(
       (e: React.KeyboardEvent) => {
-        if (item.disabled) return;
+        if (item.disabled || sectionHeader) return;
 
         const current = e.currentTarget as HTMLElement;
         const parentList = current.closest('[role="list"]');
@@ -372,12 +381,58 @@ const SidebarItem = forwardRef<HTMLLIElement, SidebarItemProps>(
           }
         }
       },
-      [item, collapsed, hasChildren, submenuOpen, handleClick, router],
+      [item, collapsed, hasChildren, submenuOpen, sectionHeader, handleClick, router],
     );
+
+    // ── SECTION HEADER RENDERING ─────────────────────────────────
+    if (sectionHeader) {
+      return (
+        <li
+          ref={ref}
+          id={itemId}
+          role="presentation"
+          className={cn(
+            item.dividerBefore
+              ? "mt-3 border-t border-border-subtle pt-3"
+              : "mt-2",
+          )}
+        >
+          <div
+            id={`${itemId}-header`}
+            role="heading"
+            aria-level={depth + 2}
+            className={cn(
+              "overflow-hidden",
+              collapsed ? "px-0" : "px-3",
+            )}
+          >
+            {collapsed ? (
+              // In collapsed mode, show a subtle divider dot or nothing
+              <div className="mx-auto h-px w-6 bg-border-subtle" aria-hidden="true" />
+            ) : (
+              <span
+                className={cn(
+                  "block truncate text-xs font-semibold uppercase tracking-wider",
+                  "text-text-tertiary dark:text-neutral-500",
+                  variant === "compact" ? "py-0.5" : "py-1",
+                )}
+              >
+                {item.label}
+              </span>
+            )}
+          </div>
+        </li>
+      );
+    }
 
     // ── Render tag ──────────────────────────────────────────────
     const Tag: React.ElementType = item.href && !item.onClick ? "a" : "button";
     const isButton = Tag === "button";
+
+    // ── Compute depth-based padding (avoid dynamic Tailwind classes) ──
+    const depthPaddingLeft = !collapsed && isChild
+      ? `${2.5 + depth * 0.75}rem` // 10rem base for isChild + incremental
+      : undefined;
 
     // ── Common item classes ─────────────────────────────────────
     const itemClasses = cn(
@@ -388,8 +443,6 @@ const SidebarItem = forwardRef<HTMLLIElement, SidebarItemProps>(
       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus focus-visible:ring-offset-1",
       // Spacing
       collapsed ? "justify-center px-0 py-2.5" : "justify-start px-3 py-2",
-      isChild && !collapsed ? "pl-10 pr-3" : "",
-      depth > 0 && !collapsed ? `pl-${8 + depth * 4}` : "",
       // Colors
       active || childActive
         ? [
@@ -501,6 +554,7 @@ const SidebarItem = forwardRef<HTMLLIElement, SidebarItemProps>(
       "aria-current":
         active && !hasChildren ? ("page" as const) : undefined,
       title: collapsed ? item.label : undefined,
+      style: depthPaddingLeft ? { paddingLeft: depthPaddingLeft } : undefined,
     };
 
     const element = Tag === "a" ? (
@@ -696,8 +750,8 @@ const Sidebar = forwardRef<HTMLElement, SidebarProps>((props, ref) => {
         id={baseId}
         aria-label={ariaLabel}
         className={cn(
-          // Layout
-          "flex flex-col h-full",
+          // Layout — `relative` required for the collapse toggle button (absolute positioned)
+          "relative flex flex-col h-full",
           // Visual
           "bg-surface dark:bg-neutral-950",
           "border-r border-border-subtle dark:border-neutral-800",
@@ -705,6 +759,8 @@ const Sidebar = forwardRef<HTMLElement, SidebarProps>((props, ref) => {
           "overflow-hidden",
           // Shadow on right edge (subtle)
           "shadow-elevation-1",
+          // External className override
+          className,
         )}
         style={{
           width: collapsed ? SIDEBAR_COLLAPSED_WIDTH : SIDEBAR_WIDTH,
@@ -884,6 +940,6 @@ export function useMobileSidebar() {
 
 export { Sidebar, SidebarItem, SidebarContext, useSidebar };
 
-export type { SidebarContextValue, SidebarItemProps, SidebarItemBadge };
+export type { SidebarContextValue, SidebarItemProps };
 
 export default Sidebar;

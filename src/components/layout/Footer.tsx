@@ -4,6 +4,7 @@ import React, {
   forwardRef,
   useCallback,
   useState,
+  useEffect,
   createContext,
   useContext,
 } from "react";
@@ -112,6 +113,10 @@ export interface FooterProps
   newsletterSlot?: React.ReactNode;
   /** Maximum width for footer content */
   maxWidth?: "full" | "container";
+
+  // ── Content override ──────────────────────────────────────────
+  /** Custom children – if provided, replaces the auto‑generated content (back‑to‑top remains) */
+  children?: React.ReactNode;
 
   // ── Styling ───────────────────────────────────────────────────
   /** Custom class for footer wrapper */
@@ -320,6 +325,7 @@ const Footer = forwardRef<HTMLElement, FooterProps>((props, ref) => {
     maxWidth = "container",
     className,
     innerClassName,
+    children,
     ...rest
   } = props;
 
@@ -327,7 +333,7 @@ const Footer = forwardRef<HTMLElement, FooterProps>((props, ref) => {
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   // Track scroll position for back-to-top visibility
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof window === "undefined") return;
     const handler = () => {
       setShowScrollTop(window.scrollY > 400);
@@ -376,108 +382,205 @@ const Footer = forwardRef<HTMLElement, FooterProps>((props, ref) => {
         {...rest}
       >
         <div className={innerClass}>
-          {/* ── Main Grid ─────────────────────────────────── */}
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-12">
-            {/* ── Brand Column ───────────────────────── */}
-            <div className="lg:col-span-4">
-              {/* Logo */}
-              <a
-                href={logoHref}
-                className="inline-flex items-center gap-2 mb-3"
-                aria-label="Acasă"
-              >
-                {logo ?? (
-                  <span
-                    className={cn(
-                      "text-xl font-bold tracking-tight",
-                      variant === "dark"
-                        ? "text-text-inverse"
-                        : "text-text-primary",
-                    )}
+          {/* ── Children override ────────────────────────── */}
+          {children ? (
+            children
+          ) : (
+            <>
+              {/* ── Main Grid ─────────────────────────────────── */}
+              <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-12">
+                {/* ── Brand Column ───────────────────────── */}
+                <div className="lg:col-span-4">
+                  {/* Logo */}
+                  <a
+                    href={logoHref}
+                    className="inline-flex items-center gap-2 mb-3"
+                    aria-label="Acasă"
                   >
-                    Nexus
-                  </span>
-                )}
-              </a>
-
-              {/* Brand description */}
-              {brandDescription && (
-                <p
-                  className={cn(
-                    "text-sm leading-relaxed max-w-xs mb-5",
-                    variant === "dark"
-                      ? "text-text-inverse/60"
-                      : "text-text-secondary/70",
-                  )}
-                >
-                  {brandDescription}
-                </p>
-              )}
-
-              {/* Contact info */}
-              {contactInfo && (
-                <div className="space-y-2 mb-5">
-                  {contactInfo.address && (
-                    <div className="flex items-start gap-2 text-sm">
-                      <MapPin
-                        className="h-4 w-4 mt-0.5 shrink-0 text-text-tertiary"
-                        aria-hidden="true"
-                      />
+                    {logo ?? (
                       <span
                         className={cn(
+                          "text-xl font-bold tracking-tight",
                           variant === "dark"
-                            ? "text-text-inverse/60"
-                            : "text-text-secondary/70",
+                            ? "text-text-inverse"
+                            : "text-text-primary",
                         )}
                       >
-                        {contactInfo.address}
+                        Nexus
                       </span>
+                    )}
+                  </a>
+
+                  {/* Brand description */}
+                  {brandDescription && (
+                    <p
+                      className={cn(
+                        "text-sm leading-relaxed max-w-xs mb-5",
+                        variant === "dark"
+                          ? "text-text-inverse/60"
+                          : "text-text-secondary/70",
+                      )}
+                    >
+                      {brandDescription}
+                    </p>
+                  )}
+
+                  {/* Contact info */}
+                  {contactInfo && (
+                    <div className="space-y-2 mb-5">
+                      {contactInfo.address && (
+                        <div className="flex items-start gap-2 text-sm">
+                          <MapPin
+                            className="h-4 w-4 mt-0.5 shrink-0 text-text-tertiary"
+                            aria-hidden="true"
+                          />
+                          <span
+                            className={cn(
+                              variant === "dark"
+                                ? "text-text-inverse/60"
+                                : "text-text-secondary/70",
+                            )}
+                          >
+                            {contactInfo.address}
+                          </span>
+                        </div>
+                      )}
+                      {contactInfo.phone && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Phone
+                            className="h-4 w-4 shrink-0 text-text-tertiary"
+                            aria-hidden="true"
+                          />
+                          <a
+                            href={`tel:${contactInfo.phone.replace(/\s/g, "")}`}
+                            className={cn(
+                              "transition-colors duration-150 hover:underline",
+                              variant === "dark"
+                                ? "text-text-inverse/60 hover:text-text-inverse"
+                                : "text-text-secondary/70 hover:text-text-primary",
+                            )}
+                          >
+                            {contactInfo.phone}
+                          </a>
+                        </div>
+                      )}
+                      {contactInfo.email && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Mail
+                            className="h-4 w-4 shrink-0 text-text-tertiary"
+                            aria-hidden="true"
+                          />
+                          <a
+                            href={`mailto:${contactInfo.email}`}
+                            className={cn(
+                              "transition-colors duration-150 hover:underline",
+                              variant === "dark"
+                                ? "text-text-inverse/60 hover:text-text-inverse"
+                                : "text-text-secondary/70 hover:text-text-primary",
+                            )}
+                          >
+                            {contactInfo.email}
+                          </a>
+                        </div>
+                      )}
                     </div>
                   )}
-                  {contactInfo.phone && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <Phone
-                        className="h-4 w-4 shrink-0 text-text-tertiary"
-                        aria-hidden="true"
-                      />
-                      <a
-                        href={`tel:${contactInfo.phone.replace(/\s/g, "")}`}
-                        className={cn(
-                          "transition-colors duration-150 hover:underline",
-                          variant === "dark"
-                            ? "text-text-inverse/60 hover:text-text-inverse"
-                            : "text-text-secondary/70 hover:text-text-primary",
-                        )}
-                      >
-                        {contactInfo.phone}
-                      </a>
-                    </div>
-                  )}
-                  {contactInfo.email && (
-                    <div className="flex items-center gap-2 text-sm">
-                      <Mail
-                        className="h-4 w-4 shrink-0 text-text-tertiary"
-                        aria-hidden="true"
-                      />
-                      <a
-                        href={`mailto:${contactInfo.email}`}
-                        className={cn(
-                          "transition-colors duration-150 hover:underline",
-                          variant === "dark"
-                            ? "text-text-inverse/60 hover:text-text-inverse"
-                            : "text-text-secondary/70 hover:text-text-primary",
-                        )}
-                      >
-                        {contactInfo.email}
-                      </a>
+
+                  {/* Social links in brand column (desktop) */}
+                  {displaySocialLinks.length > 0 && (
+                    <div className="hidden lg:flex items-center gap-1.5 mt-4">
+                      {displaySocialLinks.map((link) => (
+                        <a
+                          key={link.platform}
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={link.ariaLabel ?? link.platform}
+                          className={cn(socialIconVariants({ variant }))}
+                        >
+                          {link.icon}
+                        </a>
+                      ))}
                     </div>
                   )}
                 </div>
+
+                {/* ── Link Columns ────────────────────────── */}
+                {columns.length > 0 && (
+                  <div className="lg:col-span-8">
+                    <div
+                      className="grid gap-8"
+                      style={{
+                        gridTemplateColumns: `repeat(${Math.min(columns.length, 4)}, minmax(0, 1fr))`,
+                      }}
+                    >
+                      {columns.map((column) => (
+                        <div key={column.title}>
+                          <h3 className={headingClass}>{column.title}</h3>
+                          <ul className="space-y-2.5" role="list">
+                            {column.links.map((link) => (
+                              <li key={link.label}>
+                                <a
+                                  href={link.disabled ? undefined : link.href}
+                                  target={
+                                    link.external ? "_blank" : undefined
+                                  }
+                                  rel={
+                                    link.external
+                                      ? "noopener noreferrer"
+                                      : undefined
+                                  }
+                                  onClick={(e) => {
+                                    if (link.disabled) {
+                                      e.preventDefault();
+                                      return;
+                                    }
+                                    link.onClick?.();
+                                  }}
+                                  className={cn(
+                                    footerLinkVariants({
+                                      variant,
+                                      disabled: link.disabled,
+                                    }),
+                                  )}
+                                  aria-disabled={link.disabled}
+                                >
+                                  {link.icon && (
+                                    <span
+                                      className="shrink-0"
+                                      aria-hidden="true"
+                                    >
+                                      {link.icon}
+                                    </span>
+                                  )}
+                                  <span>{link.label}</span>
+                                  {link.external && (
+                                    <ExternalLink
+                                      className="h-3 w-3"
+                                      aria-hidden="true"
+                                    />
+                                  )}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* ── Newsletter Slot ───────────────────────────── */}
+              {newsletterSlot && (
+                <div className="mt-10 pt-8 border-t border-border-subtle/50">
+                  {newsletterSlot}
+                </div>
               )}
 
-              {/* Social links in brand column (desktop) */}
+              {/* ── Social Links (mobile/tablet, below columns) ── */}
               {displaySocialLinks.length > 0 && (
-                <div className="hidden lg:flex items-center gap-1.5 mt-4">
+                <div className="flex lg:hidden items-center gap-1.5 mt-8 pt-6 border-t border-border-subtle/50">
                   {displaySocialLinks.map((link) => (
                     <a
                       key={link.platform}
@@ -492,154 +595,64 @@ const Footer = forwardRef<HTMLElement, FooterProps>((props, ref) => {
                   ))}
                 </div>
               )}
-            </div>
 
-            {/* ── Link Columns ────────────────────────── */}
-            {columns.length > 0 && (
-              <div className="lg:col-span-8">
-                <div
-                  className="grid gap-8"
-                  style={{
-                    gridTemplateColumns: `repeat(${Math.min(columns.length, 4)}, minmax(0, 1fr))`,
-                  }}
-                >
-                  {columns.map((column) => (
-                    <div key={column.title}>
-                      <h3 className={headingClass}>{column.title}</h3>
-                      <ul className="space-y-2.5" role="list">
-                        {column.links.map((link) => (
-                          <li key={link.label}>
-                            <a
-                              href={link.disabled ? undefined : link.href}
-                              target={
-                                link.external ? "_blank" : undefined
-                              }
-                              rel={
-                                link.external
-                                  ? "noopener noreferrer"
-                                  : undefined
-                              }
-                              onClick={(e) => {
-                                if (link.disabled) {
-                                  e.preventDefault();
-                                  return;
-                                }
-                                link.onClick?.();
-                              }}
-                              className={cn(
-                                footerLinkVariants({
-                                  variant,
-                                  disabled: link.disabled,
-                                }),
-                              )}
-                              aria-disabled={link.disabled}
-                            >
-                              {link.icon && (
-                                <span
-                                  className="shrink-0"
-                                  aria-hidden="true"
-                                >
-                                  {link.icon}
-                                </span>
-                              )}
-                              <span>{link.label}</span>
-                              {link.external && (
-                                <ExternalLink
-                                  className="h-3 w-3"
-                                  aria-hidden="true"
-                                />
-                              )}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* ── Newsletter Slot ───────────────────────────── */}
-          {newsletterSlot && (
-            <div className="mt-10 pt-8 border-t border-border-subtle/50">
-              {newsletterSlot}
-            </div>
-          )}
-
-          {/* ── Social Links (mobile/tablet, below columns) ── */}
-          {displaySocialLinks.length > 0 && (
-            <div className="flex lg:hidden items-center gap-1.5 mt-8 pt-6 border-t border-border-subtle/50">
-              {displaySocialLinks.map((link) => (
-                <a
-                  key={link.platform}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={link.ariaLabel ?? link.platform}
-                  className={cn(socialIconVariants({ variant }))}
-                >
-                  {link.icon}
-                </a>
-              ))}
-            </div>
-          )}
-
-          {/* ── Bottom Bar ────────────────────────────────── */}
-          <div
-            className={cn(
-              "flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4",
-              "mt-10 pt-6",
-              "border-t border-border-subtle/50",
-            )}
-          >
-            {/* Copyright */}
-            <p
-              className={cn(
-                "text-xs",
-                variant === "dark"
-                  ? "text-text-inverse/40"
-                  : "text-text-tertiary",
-              )}
-            >
-              {displayCopyright}
-            </p>
-
-            {/* Bottom links */}
-            {bottomLinks.length > 0 && (
-              <nav
-                aria-label="Linkuri legale"
-                className="flex flex-wrap items-center gap-x-4 gap-y-1"
+              {/* ── Bottom Bar ────────────────────────────────── */}
+              <div
+                className={cn(
+                  "flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4",
+                  "mt-10 pt-6",
+                  "border-t border-border-subtle/50",
+                )}
               >
-                {bottomLinks.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.disabled ? undefined : link.href}
-                    target={link.external ? "_blank" : undefined}
-                    rel={link.external ? "noopener noreferrer" : undefined}
-                    onClick={(e) => {
-                      if (link.disabled) {
-                        e.preventDefault();
-                        return;
-                      }
-                      link.onClick?.();
-                    }}
-                    className={cn(
-                      "text-xs transition-colors duration-150",
-                      variant === "dark"
-                        ? "text-text-inverse/40 hover:text-text-inverse/70"
-                        : "text-text-tertiary hover:text-text-secondary",
-                      link.disabled &&
-                        "opacity-50 cursor-not-allowed pointer-events-none",
-                    )}
-                    aria-disabled={link.disabled}
+                {/* Copyright */}
+                <p
+                  className={cn(
+                    "text-xs",
+                    variant === "dark"
+                      ? "text-text-inverse/40"
+                      : "text-text-tertiary",
+                  )}
+                >
+                  {displayCopyright}
+                </p>
+
+                {/* Bottom links */}
+                {bottomLinks.length > 0 && (
+                  <nav
+                    aria-label="Linkuri legale"
+                    className="flex flex-wrap items-center gap-x-4 gap-y-1"
                   >
-                    {link.label}
-                  </a>
-                ))}
-              </nav>
-            )}
-          </div>
+                    {bottomLinks.map((link) => (
+                      <a
+                        key={link.label}
+                        href={link.disabled ? undefined : link.href}
+                        target={link.external ? "_blank" : undefined}
+                        rel={link.external ? "noopener noreferrer" : undefined}
+                        onClick={(e) => {
+                          if (link.disabled) {
+                            e.preventDefault();
+                            return;
+                          }
+                          link.onClick?.();
+                        }}
+                        className={cn(
+                          "text-xs transition-colors duration-150",
+                          variant === "dark"
+                            ? "text-text-inverse/40 hover:text-text-inverse/70"
+                            : "text-text-tertiary hover:text-text-secondary",
+                          link.disabled &&
+                            "opacity-50 cursor-not-allowed pointer-events-none",
+                        )}
+                        aria-disabled={link.disabled}
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </nav>
+                )}
+              </div>
+            </>
+          )}
         </div>
 
         {/* ── Back to Top ─────────────────────────────────── */}
@@ -682,17 +695,20 @@ export interface FooterBrandProps {
   logo?: React.ReactNode;
   logoHref?: string;
   description?: string;
+  /** Custom class */
+  className?: string;
 }
 
 const FooterBrand: React.FC<FooterBrandProps> = ({
   logo,
   logoHref = "/",
   description,
+  className,
 }) => {
   const { variant } = useFooterContext();
 
   return (
-    <div>
+    <div className={className}>
       <a
         href={logoHref}
         className="inline-flex items-center gap-2 mb-3"
@@ -733,9 +749,11 @@ FooterBrand.displayName = "Footer.Brand";
 
 export interface FooterColumnsProps {
   columns: FooterColumn[];
+  /** Custom class */
+  className?: string;
 }
 
-const FooterColumns: React.FC<FooterColumnsProps> = ({ columns }) => {
+const FooterColumns: React.FC<FooterColumnsProps> = ({ columns, className }) => {
   const { variant } = useFooterContext();
   const headingClass = cn(footerHeadingVariants({ variant }));
 
@@ -743,7 +761,10 @@ const FooterColumns: React.FC<FooterColumnsProps> = ({ columns }) => {
 
   return (
     <div
-      className="grid gap-8"
+      className={cn(
+        "grid gap-8",
+        className,
+      )}
       style={{
         gridTemplateColumns: `repeat(${Math.min(columns.length, 4)}, minmax(0, 1fr))`,
       }}
@@ -797,15 +818,17 @@ FooterColumns.displayName = "Footer.Columns";
 
 export interface FooterSocialProps {
   links: FooterSocialLink[];
+  /** Custom class */
+  className?: string;
 }
 
-const FooterSocial: React.FC<FooterSocialProps> = ({ links }) => {
+const FooterSocial: React.FC<FooterSocialProps> = ({ links, className }) => {
   const { variant } = useFooterContext();
 
   if (links.length === 0) return null;
 
   return (
-    <div className="flex items-center gap-1.5">
+    <div className={cn("flex items-center gap-1.5", className)}>
       {links.map((link) => (
         <a
           key={link.platform}
@@ -831,11 +854,14 @@ FooterSocial.displayName = "Footer.Social";
 export interface FooterCopyrightProps {
   text?: string;
   bottomLinks?: FooterLink[];
+  /** Custom class */
+  className?: string;
 }
 
 const FooterCopyright: React.FC<FooterCopyrightProps> = ({
   text,
   bottomLinks = [],
+  className,
 }) => {
   const { variant } = useFooterContext();
   const currentYear = new Date().getFullYear();
@@ -843,7 +869,12 @@ const FooterCopyright: React.FC<FooterCopyrightProps> = ({
     text ?? `© ${currentYear} NexusDev. Toate drepturile rezervate.`;
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-10 pt-6 border-t border-border-subtle/50">
+    <div
+      className={cn(
+        "flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mt-10 pt-6 border-t border-border-subtle/50",
+        className,
+      )}
+    >
       <p
         className={cn(
           "text-xs",
@@ -897,15 +928,18 @@ FooterCopyright.displayName = "Footer.Copyright";
 export interface FooterBackToTopProps {
   /** Threshold in px after which button appears. Default: 400 */
   threshold?: number;
+  /** Custom class */
+  className?: string;
 }
 
 const FooterBackToTop: React.FC<FooterBackToTopProps> = ({
   threshold = 400,
+  className,
 }) => {
   const { variant } = useFooterContext();
   const [visible, setVisible] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof window === "undefined") return;
     const handler = () => {
       setVisible(window.scrollY > threshold);
@@ -937,6 +971,7 @@ const FooterBackToTop: React.FC<FooterBackToTopProps> = ({
         visible
           ? "opacity-100 translate-y-0 pointer-events-auto"
           : "opacity-0 translate-y-4 pointer-events-none",
+        className,
       )}
       aria-label="Înapoi sus"
     >
@@ -948,6 +983,130 @@ const FooterBackToTop: React.FC<FooterBackToTopProps> = ({
 FooterBackToTop.displayName = "Footer.BackToTop";
 
 // =====================================================================
+// SUB-COMPONENT: Footer.Contact
+// =====================================================================
+
+export interface FooterContactProps {
+  /** Contact information */
+  contact: FooterContactInfo;
+  /** Custom class */
+  className?: string;
+}
+
+const FooterContact: React.FC<FooterContactProps> = ({
+  contact,
+  className,
+}) => {
+  const { variant } = useFooterContext();
+
+  return (
+    <div className={cn("space-y-2", className)}>
+      {contact.address && (
+        <div className="flex items-start gap-2 text-sm">
+          <MapPin
+            className="h-4 w-4 mt-0.5 shrink-0 text-text-tertiary"
+            aria-hidden="true"
+          />
+          <span
+            className={cn(
+              variant === "dark"
+                ? "text-text-inverse/60"
+                : "text-text-secondary/70",
+            )}
+          >
+            {contact.address}
+          </span>
+        </div>
+      )}
+      {contact.phone && (
+        <div className="flex items-center gap-2 text-sm">
+          <Phone
+            className="h-4 w-4 shrink-0 text-text-tertiary"
+            aria-hidden="true"
+          />
+          <a
+            href={`tel:${contact.phone.replace(/\s/g, "")}`}
+            className={cn(
+              "transition-colors duration-150 hover:underline",
+              variant === "dark"
+                ? "text-text-inverse/60 hover:text-text-inverse"
+                : "text-text-secondary/70 hover:text-text-primary",
+            )}
+          >
+            {contact.phone}
+          </a>
+        </div>
+      )}
+      {contact.email && (
+        <div className="flex items-center gap-2 text-sm">
+          <Mail
+            className="h-4 w-4 shrink-0 text-text-tertiary"
+            aria-hidden="true"
+          />
+          <a
+            href={`mailto:${contact.email}`}
+            className={cn(
+              "transition-colors duration-150 hover:underline",
+              variant === "dark"
+                ? "text-text-inverse/60 hover:text-text-inverse"
+                : "text-text-secondary/70 hover:text-text-primary",
+            )}
+          >
+            {contact.email}
+          </a>
+        </div>
+      )}
+    </div>
+  );
+};
+
+FooterContact.displayName = "Footer.Contact";
+
+// =====================================================================
+// SUB-COMPONENT: Footer.Newsletter
+// =====================================================================
+
+export interface FooterNewsletterProps {
+  /** Title displayed above the newsletter form */
+  title?: string;
+  /** Custom class */
+  className?: string;
+  /** Newsletter form or custom content */
+  children?: React.ReactNode;
+}
+
+const FooterNewsletter: React.FC<FooterNewsletterProps> = ({
+  title,
+  className,
+  children,
+}) => {
+  const { variant } = useFooterContext();
+
+  return (
+    <div
+      className={cn(
+        "mt-10 pt-8 border-t border-border-subtle/50",
+        className,
+      )}
+    >
+      {title && (
+        <h3
+          className={cn(
+            footerHeadingVariants({ variant }),
+            "mb-4",
+          )}
+        >
+          {title}
+        </h3>
+      )}
+      {children}
+    </div>
+  );
+};
+
+FooterNewsletter.displayName = "Footer.Newsletter";
+
+// =====================================================================
 // COMPOUND FOOTER ASSIGNMENT
 // =====================================================================
 
@@ -957,6 +1116,8 @@ const CompoundFooter = Object.assign(Footer, {
   Social: FooterSocial,
   Copyright: FooterCopyright,
   BackToTop: FooterBackToTop,
+  Contact: FooterContact,
+  Newsletter: FooterNewsletter,
 });
 
 // =====================================================================

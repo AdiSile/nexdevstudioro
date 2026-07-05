@@ -231,6 +231,13 @@ const nextConfig = {
       use: ["@svgr/webpack"],
     });
 
+    // Path aliases (match tsconfig paths)
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@': resolve(__dirname, 'src'),
+      '@shared': resolve(__dirname, 'src/components/shared'),
+    };
+
     // Fallback for optional dependencies
     if (!isServer) {
       config.resolve.fallback = {

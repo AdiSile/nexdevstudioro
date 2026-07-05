@@ -334,6 +334,46 @@
       "role": "assistant",
       "content": "✅ Pas 1 (tdd-guide): 0 fișiere salvate.\n✅ Pas 2 (react-build-resolver): 1 fișiere salvate.\n✅ Pas 3 (database-reviewer): 1 fișiere salvate.\n✅ Pas 4 (typescript-reviewer): 0 fișiere salvate.\n✅ Pas 5 (security-reviewer): 1 fișiere salvate.\n✅ Pas 6 (tdd-guide): 1 fișiere salvate.\n✅ Pas 7 (tdd-guide): 1 fișiere salvate.\n✅ Pas 8 (tdd-guide): 1 fișiere salvate.\n✅ Pas 9 (tdd-guide): 1 fișiere salvate.\n✅ Pas 10 (tdd-guide): 1 fișiere salvate.\n✅ Pas 11 (tdd-guide): 1 fișiere salvate.\n✅ Pas 12 (tdd-guide): 1 fișiere salvate.\n✅ Pas 13 (tdd-guide): 0 fișiere salvate.\n✅ Pas 14 (tdd-guide): 1 fișiere salvate.\n✅ Pas 15 (tdd-guide): 1 fișiere salvate.\n✅ Pas 16 (tdd-guide): 1 fișiere salvate.\n✅ Pas 17 (tdd-guide): 1 fișiere salvate.\n✅ Pas 18 (tdd-guide): 1 fișiere salvate.\n✅ Pas 19 (tdd-guide): 1 fișiere salvate.\n✅ Pas 20 (tdd-guide): 1 fișiere salvate.\n✅ Pas 21 (tdd-guide): 1 fișiere salvate.\n✅ Pas 22 (tdd-guide): 1 fișiere salvate.\n✅ Pas 23 (tdd-guide): 1 fișiere salvate.\n✅ Pas 24 (tdd-guide): 0 fișiere salvate.\n✅ Pas 25 (tdd-guide): 1 fișiere salvate.\n✅ Pas 26 (tdd-guide): 1 fișiere salvate.\n✅ Pas 27 (tdd-guide): 1 fișiere salvate.\n✅ Pas 28 (tdd-guide): 0 fișiere salvate.\n✅ Pas 29 (tdd-guide): 1 fișiere salvate.\n✅ Pas 30 (build-error-resolver): 1 fișiere salvate.",
       "timestamp": 1783197082.5297337
+    },
+    {
+      "role": "user",
+      "content": "Fă o verificare completă a proiectului Nexus Dev Studio și salvează raportul în `nexus-report.txt`.",
+      "timestamp": 1783216124.427282
+    },
+    {
+      "role": "system",
+      "content": "🚀 Proiect pornit: Proiect: NexusDevStudio",
+      "timestamp": 1783216124.4481094
+    },
+    {
+      "role": "assistant",
+      "content": "Raportul complet a fost salvat în `nexus-report.txt`. Mai jos este un rezumat care respectă formatul cerut.\n\nNota: 4/10\n\nLista fișierelor care lipsesc sau sunt goale (selecție critică):\n- Fișiere goale / minimale: README.md, jest.setup.ts, .env.example\n- Ruta NextAuth lipsă: src/app/api/auth/[...nextauth]/route.ts\n- Pagini lipsă: peste 40 de pagini dashboard, landing, shop și admin\n- API routes lipsă: peste 25 de endpointuri (users, projects, shop, ai etc.)\n- Module lipsă: RBAC/ABAC, AI gateway, notificări, plăți, servicii complete\n\nProbleme critice:\n- NextAuth nu poate funcționa (ruta [...nextauth] nu există)\n- Aplicația este nefuncțională (lipsesc 70% din componentele planificate)\n- Configurările de deployment (Docker, CI/CD) și documentația lipsesc\n- Baza de date nu poate fi populată (seed.ts absent)\n- Testarea este insuficientă (doar unit tests, fără integrare/E2E)",
+      "timestamp": 1783216465.1391888
+    },
+    {
+      "role": "user",
+      "content": "Repară și finalizează proiectul Nexus Dev Studio (nexdevstudioro) pe baza raportului de verificare. Priorizează strict ceea ce este necesar pentru un produs funcțional. Nu adăuga funcționalități enterprise care nu sunt necesare acum.  1. **NextAuth – CRITIC:**    - Creează `src/app/api/auth/[...nextauth]/route.ts` cu o configurare NextAuth funcțională (CredentialProvider sau EmailProvider).    - Creează `src/lib/auth/nextauth-config.ts` cu opțiunile NextAuth (secret, providers, callbacks).    - Asigură-te că `NEXTAUTH_SECRET` este setat în `.env.local` și `.env.example`.  2. **Pagini de autentificare:**    - Creează `src/app/(auth)/login/page.tsx` – formular de login funcțional cu NextAuth.    - Creează `src/app/(auth)/register/page.tsx` – formular de înregistrare.    - Creează `src/app/(auth)/forgot-password/page.tsx` – recuperare parolă.    - Creează `src/app/(auth)/verify-email/page.tsx` – verificare email.    - Mută pagina de login admin existentă în `src/app/(admin)/login/page.tsx` și păstreaz-o separată.  3. **Provider-i esențiali:**    - Creează `src/providers/AuthProvider.tsx` – SessionProvider pentru NextAuth.    - Creează `src/providers/ThemeProvider.tsx` – provider pentru tema dark/light.  4. **Hooks esențiali:**    - Creează `src/hooks/useAuth.ts` – hook pentru acces la sesiunea NextAuth.    - Creează `src/hooks/useMediaQuery.ts` – hook pentru responsive design.  5. **Layout components:**    - Creează `src/components/layout/Footer.tsx` – footer standard.    - Creează `src/components/layout/Sidebar.tsx` – sidebar pentru dashboard.    - Creează `src/components/layout/DashboardLayout.tsx` – layout pentru paginile de dashboard.  6. **Rute API esențiale:**    - Creează `src/app/api/contact/route.ts` – POST pentru salvarea mesajelor de contact.  7. **Pagini speciale:**    - Completează `src/app/error.tsx` cu un error boundary funcțional.    - Completează `src/app/not-found.tsx` cu o pagină 404 personalizată.    - Completează `src/app/loading.tsx` cu un loading state animat.  8. **Configurare și documentație:**    - Completează `README.md` cu titlul proiectului, descriere, instrucțiuni de instalare și utilizare.    - Creează `.env.example` cu toate variabilele necesare (NEXTAUTH_SECRET, DATABASE_URL, etc.).    - Creează `.eslintrc.js` și `.prettierrc` cu configurări standard.  9. **După toate modificările, rulează `npm run build` și repară orice eroare rămasă până când build-ul se termină cu succes.**  Nu adăuga pagini de dashboard enterprise, shop, AI, sau alte module care nu sunt necesare pentru un site de prezentare funcțional. Concentrează-te pe autentificare, paginile publice și admin-ul de bază.",
+      "timestamp": 1783216828.6648278
+    },
+    {
+      "role": "system",
+      "content": "🚀 Proiect pornit: Proiect: NexusDevStudio",
+      "timestamp": 1783216828.6895418
+    },
+    {
+      "role": "assistant",
+      "content": "✅ Pas 1 (tdd-guide): 0 fișiere salvate.\n✅ Pas 2 (code-architect): 1 fișiere salvate.\n✅ Pas 3 (chief-of-staff): 2 fișiere salvate.\n✅ Pas 4 (tdd-guide): 1 fișiere salvate.\n✅ Pas 5 (tdd-guide): 1 fișiere salvate.\n✅ Pas 6 (tdd-guide): 1 fișiere salvate.\n✅ Pas 7 (tdd-guide): 1 fișiere salvate.\n✅ Pas 8 (tdd-guide): 1 fișiere salvate.\n✅ Pas 9 (tdd-guide): 1 fișiere salvate.\n✅ Pas 10 (tdd-guide): 1 fișiere salvate.\n✅ Pas 11 (tdd-guide): 0 fișiere salvate.\n✅ Pas 12 (tdd-guide): 1 fișiere salvate.\n✅ Pas 13 (tdd-guide): 1 fișiere salvate.\n✅ Pas 14 (tdd-guide): 0 fișiere salvate.\n✅ Pas 15 (tdd-guide): 1 fișiere salvate.\n✅ Pas 16 (tdd-guide): 1 fișiere salvate.\n✅ Pas 17 (tdd-guide): 1 fișiere salvate.\n✅ Pas 18 (tdd-guide): 1 fișiere salvate.\n✅ Pas 19 (doc-updater): 1 fișiere salvate.\n✅ Pas 20 (chief-of-staff): 1 fișiere salvate.\n✅ Pas 21 (chief-of-staff): 1 fișiere salvate.\n✅ Pas 22 (react-build-resolver): 1 fișiere salvate.",
+      "timestamp": 1783219610.010002
+    },
+    {
+      "role": "user",
+      "content": "Fă o verificare completă a proiectului Nexus Dev Studio și salvează raportul în `nexus-report.txt`.",
+      "timestamp": 1783256783.3020713
+    },
+    {
+      "role": "system",
+      "content": "🚀 Proiect pornit: Proiect: NexusDevStudio",
+      "timestamp": 1783256783.328811
     }
   ],
   "cerinta": "NexusDevStudio.ro Enterprise AI-Powered Digital Platform  API-First  Modular Monolith (prepared for Microservices)  Multi-Tenant Ready  Headless CMS  Responsive  SEO Optimized  PWA Ready  Cloud Native  Scalable  Event Driven    ────────────────────────────────────────    ARCHITECTURE    Frontend  ├── Landing Website  ├── Client Portal  ├── Customer Dashboard  ├── Admin Dashboard  ├── AI Workspace  ├── Shop  ├── Blog  ├── Events  ├── Portfolio  ├── Knowledge Base  ├── Contact Center    Backend  ├── REST API  ├── GraphQL API  ├── WebSocket Gateway  ├── Authentication Service  ├── Authorization Service  ├── Business Logic  ├── AI Gateway  ├── Payment Gateway  ├── Notification Gateway  ├── File Management  ├── Automation Engine  ├── Scheduler  ├── Audit System  ├── Logging  ├── Monitoring    Infrastructure  ├── PostgreSQL  ├── Redis  ├── Object Storage  ├── CDN  ├── Queue System  ├── Search Engine  ├── Cache Layer  ├── Backup System    ────────────────────────────────────────    CORE MODULES    Core  Authentication  Authorization  Users  Roles  Permissions  Organizations  Teams  Clients  CRM  Projects  Tasks  Calendar  Messaging  Notifications  Settings  Audit Logs  Activity Logs  API Keys  Webhooks    ────────────────────────────────────────    CMS    Pages  Dynamic Sections  Navigation  Menus  Footer  Blocks  Widgets  Media Library  Forms  FAQ  Testimonials  Partners  Reviews  Announcements  Popup Manager  SEO Manager  Redirect Manager  Sitemap  Robots  Localization  Translations    ────────────────────────────────────────    CONTENT    Blog  Categories  Tags  Authors  Drafts  Publishing  Scheduled Posts  Rich Editor  Comments  Search  Documentation  Knowledge Base  Case Studies  Portfolio    ────────────────────────────────────────    SERVICES    Categories  Services  Pricing  Packages  Subscriptions  Custom Quotes  Bookings  Consultations  Service Requests    ────────────────────────────────────────    SHOP    Categories  Products  Variants  Attributes  Inventory  Stock  Suppliers  Brands  Orders  Invoices  Coupons  Gift Cards  Discounts  Taxes  Shipping  Returns  Wishlists  Reviews  Recommendations  Cross Sell  Upsell  Digital Products  Licenses    ────────────────────────────────────────    CLIENT AREA    Dashboard  Projects  Invoices  Payments  Orders  Tickets  Files  Contracts  Messages  Notifications  Appointments  Downloads  AI Credits  Usage Statistics    ────────────────────────────────────────    EVENTS    Categories  Events  Registrations  Tickets  Speakers  Agenda  Sponsors  Gallery  Live Streams  Certificates    ────────────────────────────────────────    AI PLATFORM    AI Chat  AI Agents  AI Assistants  Prompt Library  Prompt Templates  Knowledge Base  RAG  Embeddings  Vector Database  OCR  Speech To Text  Text To Speech  Image Generation  Video Generation  Code Generation  Document Analysis  Translation  Summarization  SEO Generator  Marketing Generator  Workflow Builder  AI Automation  AI Analytics  Model Management  Provider Management  Usage Tracking  Token Monitoring    ────────────────────────────────────────    AUTOMATION    Workflow Engine  Triggers  Conditions  Actions  Email Automation  SMS Automation  WhatsApp Automation  Webhook Automation  Scheduled Jobs  Background Jobs  Queue Processing    ────────────────────────────────────────    COMMUNICATION    Inbox  Support Tickets  Live Chat  Chatbot  Email  SMS  Push Notifications  WhatsApp  Internal Messaging    ────────────────────────────────────────    PAYMENTS    Stripe  PayPal  Crypto  Bank Transfer  Subscriptions  Recurring Payments  Invoices  Refunds  Taxes  Accounting Integration    ────────────────────────────────────────    ADMIN    Dashboard  Users  Roles  Permissions  CMS  Content  Services  Products  Orders  Events  AI  CRM  Analytics  Reports  System Settings  API Management  Integrations  Feature Flags  Maintenance Mode    ────────────────────────────────────────    ANALYTICS    Visitors  Sessions  Conversions  Funnels  Sales  Revenue  Orders  User Activity  Heatmaps  Performance  AI Usage  System Health  Business Intelligence    ────────────────────────────────────────    SECURITY    JWT  OAuth2  SSO  2FA  RBAC  ABAC  Session Management  Rate Limiting  CSRF Protection  XSS Protection  SQL Injection Protection  Encryption  Secrets Management  Audit Trail  IP Restrictions  Device Management    ────────────────────────────────────────    SEARCH    Global Search  Instant Search  Full Text Search  Filters  Faceted Search  AI Semantic Search    ────────────────────────────────────────    FILES    Media Library  Images  Videos  Documents  Versioning  CDN  Optimization  Compression    ────────────────────────────────────────    SEO    Meta Manager  OpenGraph  Schema.org  Canonical URLs  Dynamic Sitemap  Robots.txt  Breadcrumbs  Structured Data  Performance Optimization    ────────────────────────────────────────    INTEGRATIONS    Google  Microsoft  GitHub  GitLab  Discord  Slack  Telegram  WhatsApp  Stripe  PayPal  Cloudflare  OpenAI  Anthropic  Google Gemini  xAI  DeepSeek  Mistral  AWS  Azure  Cloudflare R2  Supabase  Firebase    ────────────────────────────────────────    SYSTEM    Feature Flags  Environment Manager  Configuration Manager  Health Checks  Error Tracking  Logging  Monitoring  Metrics  Alerts  Backups  Restore  Migration Manager    ────────────────────────────────────────    DESIGN SYSTEM    Dark Mode  Light Mode  Theme Manager  Component Library  Responsive Layout  Accessibility (WCAG AA)  Animations  Micro Interactions    ────────────────────────────────────────    TECHNICAL REQUIREMENTS    API First  Headless Architecture  Server Side Rendering  Static Generation  Edge Rendering  Real-Time Updates  Offline Support  Progressive Web App  Docker Ready  Kubernetes Ready  Horizontal Scaling  Vertical Scaling  CI/CD Ready  High Availability  Disaster Recovery  Enterprise Grade  Production Ready  Future Proof",
@@ -1351,61 +1391,205 @@
       "desc": "Fișier: /home/user/agent_deployment/NexusDevStudioRo/package.json\nrulează comanda de build `npm run build` și repară erorile rămase, iterând până la succes\n\nSkill-uri relevante:\nSkill: agent-introspection-debugging\n# Agent Introspection Debugging\n\nUse this skill when an agent run is failing repeatedly, consuming tokens without progress, looping on the same tools, or drifting away from the intended task.\n\nThis is a workflow skill, not a hidden runtime. It teaches the agent to debug itself systematically before \n\nSkill: angular-developer\n# Angular Developer Guidelines\n\n## When to Activate\n\n- Working in any Angular project or codebase\n- Creating or scaffolding a new Angular project, application, or library\n- Generating components, services, directives, pipes, guards, or resolvers\n- Implementing reactivity with Angular Signals, `linke\n\nSkill: api-connector-builder\n# API Connector Builder\n\nUse this when the job is to add a repo-native integration surface, not just a generic HTTP client.\n\nThe point is to match the host repository's pattern:\n\n- connector layout\n- config schema\n- auth model\n- error handling\n- test style\n- registration/discovery wiring\n\n## When to\n\nReguli:\n---\npaths:\n  - \"**/*.component.ts\"\n  - \"**/*.component.html\"\n  - \"**/*.service.ts\"\n  - \"**/*.directive.ts\"\n  - \"**/*.pipe.ts\"\n  - \"**/*.guard.ts\"\n  - \"**/*.resolver.ts\"\n  - \"**/*.module.ts\"\n---\n# Angular Coding Style\n> This file extends [common/coding-style.md](../common/coding-style.md) with Angular specific content.\nAlways check the project's Angular version before writing code — features differ significantly between versions. Run `ng version` or inspect `package.json`. When creating a new project, do not pin a version unless the user specifies one.\n---\npaths:\n  - \"**/*.go\"\n  - \"**/go.mod\"\n  - \"**/go.sum\"\n---\n# Go Coding Style\n> This file extends [common/coding-style.md](../common/coding-style.md) with Go specific content.\n- **gofmt** and **goimports** are mandatory — no style debates\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
       "agent": "build-error-resolver",
       "status": "pending"
+    },
+    {
+      "id": "2650de67",
+      "desc": "src/app/api/auth/[...nextauth]/route.ts - Implementează handler-ul API NextAuth cu CredentialProvider\n\nSkill-uri relevante:\nSkill: angular-developer\n# Angular Developer Guidelines\n\n## When to Activate\n\n- Working in any Angular project or codebase\n- Creating or scaffolding a new Angular project, application, or library\n- Generating components, services, directives, pipes, guards, or resolvers\n- Implementing reactivity with Angular Signals, `linke\n\nSkill: api-connector-builder\n# API Connector Builder\n\nUse this when the job is to add a repo-native integration surface, not just a generic HTTP client.\n\nThe point is to match the host repository's pattern:\n\n- connector layout\n- config schema\n- auth model\n- error handling\n- test style\n- registration/discovery wiring\n\n## When to\n\nSkill: api-design\n# API Design Patterns\n\nConventions and best practices for designing consistent, developer-friendly REST APIs.\n\n## When to Activate\n\n- Designing new API endpoints\n- Reviewing existing API contracts\n- Adding pagination, filtering, or sorting\n- Implementing error handling for APIs\n- Planning API versio\n\nReguli:\n---\npaths:\n  - \"**/*.component.ts\"\n  - \"**/*.component.html\"\n  - \"**/*.service.ts\"\n  - \"**/*.directive.ts\"\n  - \"**/*.pipe.ts\"\n  - \"**/*.guard.ts\"\n  - \"**/*.resolver.ts\"\n  - \"**/*.module.ts\"\n---\n# Angular Coding Style\n> This file extends [common/coding-style.md](../common/coding-style.md) with Angular specific content.\nAlways check the project's Angular version before writing code — features differ significantly between versions. Run `ng version` or inspect `package.json`. When creating a new project, do not pin a version unless the user specifies one.\n---\npaths:\n  - \"**/*.ets\"\n  - \"**/*.ts\"\n  - \"**/module.json5\"\n  - \"**/oh-package.json5\"\n  - \"**/build-profile.json5\"\n---\n# HarmonyOS / ArkTS Coding Style\n> This file extends [common/coding-style.md](../common/coding-style.md) with HarmonyOS and ArkTS-specific content.\n## ArkTS Language Constraints\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "b019f8ed",
+      "desc": "Fișier: src/lib/auth/nextauth-config.ts\nConfigurează opțiunile NextAuth (secret, providers, callbacks)\n\nSkill-uri relevante:\nSkill: configure-ecc\n# Configure Everything Claude Code (ECC)\n\nAn interactive, step-by-step installation wizard for the Everything Claude Code project. Uses `AskUserQuestion` to guide users through selective installation of skills and rules, then verifies correctness and offers optimization.\n\n## When to Activate\n\n- User\n\nSkill: flox-environments\n# Flox Environments\n\nFlox creates reproducible development environments defined in a single TOML manifest. Every developer on the team gets identical packages, tools, and configuration — across macOS and Linux — without containers or VMs. Built on Nix with access to over 150,000 packages.\n\n## When t\n\nSkill: hermes-imports\n# Hermes Imports\n\nUse this skill when turning a repeated Hermes workflow into something safe to ship in ECC.\n\nHermes is the operator shell. ECC is the reusable workflow layer. Imports should move stable patterns from Hermes into ECC without moving private state.\n\n## When To Use\n\n- A Hermes workflow \n\nReguli:\n---\npaths:\n  - \"**/*.ets\"\n  - \"**/*.ts\"\n  - \"**/module.json5\"\n  - \"**/oh-package.json5\"\n  - \"**/build-profile.json5\"\n---\n# HarmonyOS / ArkTS Coding Style\n> This file extends [common/coding-style.md](../common/coding-style.md) with HarmonyOS and ArkTS-specific content.\n## ArkTS Language Constraints\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "code-architect",
+      "status": "pending"
+    },
+    {
+      "id": "ec8156e6",
+      "desc": ".env.local, .env.example - Setează NEXTAUTH_SECRET și DATABASE_URL\n\nSkill-uri relevante:\nSkill: flox-environments\n# Flox Environments\n\nFlox creates reproducible development environments defined in a single TOML manifest. Every developer on the team gets identical packages, tools, and configuration — across macOS and Linux — without containers or VMs. Built on Nix with access to over 150,000 packages.\n\n## When t\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "chief-of-staff",
+      "status": "pending"
+    },
+    {
+      "id": "d06c18af",
+      "desc": "Fișier: src/providers/AuthProvider.tsx\nCreează SessionProvider pentru NextAuth\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "465d1c2b",
+      "desc": "Fișier: src/providers/ThemeProvider.tsx\nCreează provider pentru temă dark/light\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "5d7f8656",
+      "desc": "Fișier: src/hooks/useAuth.ts\nCompletează hook-ul pentru acces la sesiunea NextAuth\n\nSkill-uri relevante:\nSkill: accessibility\n# Accessibility (WCAG 2.2)\n\nThis skill ensures that digital interfaces are Perceivable, Operable, Understandable, and Robust (POUR) for all users, including those using screen readers, switch controls, or keyboard navigation. It focuses on the technical implementation of WCAG 2.2 success criteria.\n\n\n\nSkill: angular-developer\n# Angular Developer Guidelines\n\n## When to Activate\n\n- Working in any Angular project or codebase\n- Creating or scaffolding a new Angular project, application, or library\n- Generating components, services, directives, pipes, guards, or resolvers\n- Implementing reactivity with Angular Signals, `linke\n\nSkill: carrier-relationship-management\n# Carrier Relationship Management\n\n## Role and Context\n\nYou are a senior transportation manager with 15+ years managing carrier portfolios ranging from 40 to 200+ active carriers across truckload, LTL, intermodal, and brokerage. You own the full lifecycle: sourcing new carriers, negotiating rates, r\n\nReguli:\n---\npaths:\n  - \"**/*.component.ts\"\n  - \"**/*.component.html\"\n  - \"**/*.service.ts\"\n  - \"**/*.directive.ts\"\n  - \"**/*.pipe.ts\"\n  - \"**/*.guard.ts\"\n  - \"**/*.resolver.ts\"\n  - \"**/*.module.ts\"\n---\n# Angular Coding Style\n> This file extends [common/coding-style.md](../common/coding-style.md) with Angular specific content.\nAlways check the project's Angular version before writing code — features differ significantly between versions. Run `ng version` or inspect `package.json`. When creating a new project, do not pin a version unless the user specifies one.\n---\npaths:\n  - \"**/*.ets\"\n  - \"**/*.ts\"\n  - \"**/module.json5\"\n  - \"**/oh-package.json5\"\n  - \"**/build-profile.json5\"\n---\n# HarmonyOS / ArkTS Coding Style\n> This file extends [common/coding-style.md](../common/coding-style.md) with HarmonyOS and ArkTS-specific content.\n## ArkTS Language Constraints\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "0d659d33",
+      "desc": "Fișier: src/hooks/useMediaQuery.ts\nCreează hook pentru responsive design\n\nSkill-uri relevante:\nSkill: api-design\n# API Design Patterns\n\nConventions and best practices for designing consistent, developer-friendly REST APIs.\n\n## When to Activate\n\n- Designing new API endpoints\n- Reviewing existing API contracts\n- Adding pagination, filtering, or sorting\n- Implementing error handling for APIs\n- Planning API versio\n\nSkill: design-system\n# Design System — Generate & Audit Visual Systems\n\n## When to Use\n\n- Starting a new project that needs a design system\n- Auditing an existing codebase for visual consistency\n- Before a redesign — understand what you have\n- When the UI looks \"off\" but you can't pinpoint why\n- Reviewing PRs that touch\n\nSkill: flox-environments\n# Flox Environments\n\nFlox creates reproducible development environments defined in a single TOML manifest. Every developer on the team gets identical packages, tools, and configuration — across macOS and Linux — without containers or VMs. Built on Nix with access to over 150,000 packages.\n\n## When t\n\nReguli:\n---\npaths:\n  - \"**/*.ets\"\n  - \"**/*.ts\"\n  - \"**/module.json5\"\n  - \"**/oh-package.json5\"\n  - \"**/build-profile.json5\"\n---\n# HarmonyOS / ArkTS Coding Style\n> This file extends [common/coding-style.md](../common/coding-style.md) with HarmonyOS and ArkTS-specific content.\n## ArkTS Language Constraints\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "9a4edf18",
+      "desc": "src/app/(auth)/login/page.tsx - Implementează formular de login funcțional cu NextAuth\n\nSkill-uri relevante:\nSkill: agent-introspection-debugging\n# Agent Introspection Debugging\n\nUse this skill when an agent run is failing repeatedly, consuming tokens without progress, looping on the same tools, or drifting away from the intended task.\n\nThis is a workflow skill, not a hidden runtime. It teaches the agent to debug itself systematically before \n\nSkill: angular-developer\n# Angular Developer Guidelines\n\n## When to Activate\n\n- Working in any Angular project or codebase\n- Creating or scaffolding a new Angular project, application, or library\n- Generating components, services, directives, pipes, guards, or resolvers\n- Implementing reactivity with Angular Signals, `linke\n\nSkill: api-connector-builder\n# API Connector Builder\n\nUse this when the job is to add a repo-native integration surface, not just a generic HTTP client.\n\nThe point is to match the host repository's pattern:\n\n- connector layout\n- config schema\n- auth model\n- error handling\n- test style\n- registration/discovery wiring\n\n## When to\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "3b98b107",
+      "desc": "src/app/(auth)/register/page.tsx - Implementează formular de înregistrare\n\nSkill-uri relevante:\nSkill: agent-introspection-debugging\n# Agent Introspection Debugging\n\nUse this skill when an agent run is failing repeatedly, consuming tokens without progress, looping on the same tools, or drifting away from the intended task.\n\nThis is a workflow skill, not a hidden runtime. It teaches the agent to debug itself systematically before \n\nSkill: angular-developer\n# Angular Developer Guidelines\n\n## When to Activate\n\n- Working in any Angular project or codebase\n- Creating or scaffolding a new Angular project, application, or library\n- Generating components, services, directives, pipes, guards, or resolvers\n- Implementing reactivity with Angular Signals, `linke\n\nSkill: api-connector-builder\n# API Connector Builder\n\nUse this when the job is to add a repo-native integration surface, not just a generic HTTP client.\n\nThe point is to match the host repository's pattern:\n\n- connector layout\n- config schema\n- auth model\n- error handling\n- test style\n- registration/discovery wiring\n\n## When to\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "ea684472",
+      "desc": "src/app/(auth)/forgot-password/page.tsx - Implementează pagina de recuperare parolă\n\nSkill-uri relevante:\nSkill: agent-introspection-debugging\n# Agent Introspection Debugging\n\nUse this skill when an agent run is failing repeatedly, consuming tokens without progress, looping on the same tools, or drifting away from the intended task.\n\nThis is a workflow skill, not a hidden runtime. It teaches the agent to debug itself systematically before \n\nSkill: angular-developer\n# Angular Developer Guidelines\n\n## When to Activate\n\n- Working in any Angular project or codebase\n- Creating or scaffolding a new Angular project, application, or library\n- Generating components, services, directives, pipes, guards, or resolvers\n- Implementing reactivity with Angular Signals, `linke\n\nSkill: api-connector-builder\n# API Connector Builder\n\nUse this when the job is to add a repo-native integration surface, not just a generic HTTP client.\n\nThe point is to match the host repository's pattern:\n\n- connector layout\n- config schema\n- auth model\n- error handling\n- test style\n- registration/discovery wiring\n\n## When to\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "923303bd",
+      "desc": "src/app/(auth)/verify-email/page.tsx - Implementează pagina de verificare email\n\nSkill-uri relevante:\nSkill: agent-introspection-debugging\n# Agent Introspection Debugging\n\nUse this skill when an agent run is failing repeatedly, consuming tokens without progress, looping on the same tools, or drifting away from the intended task.\n\nThis is a workflow skill, not a hidden runtime. It teaches the agent to debug itself systematically before \n\nSkill: angular-developer\n# Angular Developer Guidelines\n\n## When to Activate\n\n- Working in any Angular project or codebase\n- Creating or scaffolding a new Angular project, application, or library\n- Generating components, services, directives, pipes, guards, or resolvers\n- Implementing reactivity with Angular Signals, `linke\n\nSkill: api-connector-builder\n# API Connector Builder\n\nUse this when the job is to add a repo-native integration surface, not just a generic HTTP client.\n\nThe point is to match the host repository's pattern:\n\n- connector layout\n- config schema\n- auth model\n- error handling\n- test style\n- registration/discovery wiring\n\n## When to\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "3b606739",
+      "desc": "Fișier: src/components/layout/Footer.tsx\nCompletează componenta footer standard\n\nSkill-uri relevante:\nSkill: coding-standards\n# Coding Standards & Best Practices\n\nBaseline coding conventions applicable across projects.\n\nThis skill is the shared floor, not the detailed framework playbook.\n\n- Use `frontend-patterns` for React, state, forms, rendering, and UI architecture.\n- Use `backend-patterns` or `api-design` for reposito\n\nSkill: cpp-coding-standards\n# C++ Coding Standards (C++ Core Guidelines)\n\nComprehensive coding standards for modern C++ (C++17/20/23) derived from the [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines). Enforces type safety, resource safety, immutability, and clarity.\n\n## When to Use\n\n- Writing\n\nSkill: java-coding-standards\n# Java Coding Standards\n\nStandards for readable, maintainable Java (17+) code in Spring Boot and Quarkus services.\n\n## When to Use\n\n- Writing or reviewing Java code in Spring Boot or Quarkus projects\n- Enforcing naming, immutability, or exception handling conventions\n- Working with records, sealed c\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "91eaf038",
+      "desc": "Fișier: src/components/layout/Sidebar.tsx\nCompletează componenta sidebar pentru dashboard\n\nSkill-uri relevante:\nSkill: dashboard-builder\n# Dashboard Builder\n\nUse this when the task is to build a dashboard people can operate from.\n\nThe goal is not \"show every metric.\" The goal is to answer:\n\n- is it healthy?\n- where is the bottleneck?\n- what changed?\n- what action should someone take?\n\n## When to Use\n\n- \"Build a Kafka monitoring dashb\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "629b6ec8",
+      "desc": "Fișier: src/components/layout/DashboardLayout.tsx\nCompletează layout-ul pentru paginile de dashboard\n\nSkill-uri relevante:\nSkill: agent-introspection-debugging\n# Agent Introspection Debugging\n\nUse this skill when an agent run is failing repeatedly, consuming tokens without progress, looping on the same tools, or drifting away from the intended task.\n\nThis is a workflow skill, not a hidden runtime. It teaches the agent to debug itself systematically before \n\nSkill: angular-developer\n# Angular Developer Guidelines\n\n## When to Activate\n\n- Working in any Angular project or codebase\n- Creating or scaffolding a new Angular project, application, or library\n- Generating components, services, directives, pipes, guards, or resolvers\n- Implementing reactivity with Angular Signals, `linke\n\nSkill: api-connector-builder\n# API Connector Builder\n\nUse this when the job is to add a repo-native integration surface, not just a generic HTTP client.\n\nThe point is to match the host repository's pattern:\n\n- connector layout\n- config schema\n- auth model\n- error handling\n- test style\n- registration/discovery wiring\n\n## When to\n\nReguli:\n---\npaths:\n  - \"**/*.component.ts\"\n  - \"**/*.component.html\"\n  - \"**/*.service.ts\"\n  - \"**/*.directive.ts\"\n  - \"**/*.pipe.ts\"\n  - \"**/*.guard.ts\"\n  - \"**/*.resolver.ts\"\n  - \"**/*.module.ts\"\n---\n# Angular Coding Style\n> This file extends [common/coding-style.md](../common/coding-style.md) with Angular specific content.\nAlways check the project's Angular version before writing code — features differ significantly between versions. Run `ng version` or inspect `package.json`. When creating a new project, do not pin a version unless the user specifies one.\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "7a8a421c",
+      "desc": "Fișier: src/app/api/contact/route.ts\nCreează ruta API POST pentru salvarea mesajelor de contact\n\nSkill-uri relevante:\nSkill: agent-introspection-debugging\n# Agent Introspection Debugging\n\nUse this skill when an agent run is failing repeatedly, consuming tokens without progress, looping on the same tools, or drifting away from the intended task.\n\nThis is a workflow skill, not a hidden runtime. It teaches the agent to debug itself systematically before \n\nSkill: angular-developer\n# Angular Developer Guidelines\n\n## When to Activate\n\n- Working in any Angular project or codebase\n- Creating or scaffolding a new Angular project, application, or library\n- Generating components, services, directives, pipes, guards, or resolvers\n- Implementing reactivity with Angular Signals, `linke\n\nSkill: api-connector-builder\n# API Connector Builder\n\nUse this when the job is to add a repo-native integration surface, not just a generic HTTP client.\n\nThe point is to match the host repository's pattern:\n\n- connector layout\n- config schema\n- auth model\n- error handling\n- test style\n- registration/discovery wiring\n\n## When to\n\nReguli:\n---\npaths:\n  - \"**/*.ets\"\n  - \"**/*.ts\"\n  - \"**/module.json5\"\n  - \"**/oh-package.json5\"\n  - \"**/build-profile.json5\"\n---\n# HarmonyOS / ArkTS Coding Style\n> This file extends [common/coding-style.md](../common/coding-style.md) with HarmonyOS and ArkTS-specific content.\n## ArkTS Language Constraints\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "a009ce5b",
+      "desc": "Fișier: src/app/error.tsx\nCompletează error boundary funcțional\n\nSkill-uri relevante:\nSkill: error-handling\n# Error Handling Patterns\n\nConsistent, robust error handling patterns for production applications.\n\n## When to Activate\n\n- Designing error types or exception hierarchies for a new module or service\n- Adding retry logic or circuit breakers for unreliable external dependencies\n- Reviewing API endpoint\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "21cf4f9e",
+      "desc": "Fișier: src/app/not-found.tsx\nCompletează pagina 404 personalizată\n\nSkill-uri relevante:\nSkill: foundation-models-on-device\n# FoundationModels: On-Device LLM (iOS 26)\n\nPatterns for integrating Apple's on-device language model into apps using the FoundationModels framework. Covers text generation, structured output with `@Generable`, custom tool calling, and snapshot streaming — all running on-device for privacy and offli\n\nSkill: motion-foundations\n# Motion Foundations\n\nThe base layer of the motion system. Defines every value, constraint, and\nrule that downstream skills (`motion-patterns`, `motion-advanced`) inherit.\nLoad this skill before any animation work begins.\n\n## When to Activate\n\n- Starting any animated component from scratch\n- Setting\n\nSkill: unified-notifications-ops\n# Unified Notifications Ops\n\nUse this skill when the real problem is not a missing ping. The real problem is a fragmented notification system.\n\nThe job is to turn scattered events into one operator surface with:\n- clear severity\n- clear ownership\n- clear routing\n- clear follow-up action\n\n## When to \n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "e0f2c4ed",
+      "desc": "Fișier: src/app/loading.tsx\nCompletează starea de încărcare animată\n\nSkill-uri relevante:\nSkill: agent-introspection-debugging\n# Agent Introspection Debugging\n\nUse this skill when an agent run is failing repeatedly, consuming tokens without progress, looping on the same tools, or drifting away from the intended task.\n\nThis is a workflow skill, not a hidden runtime. It teaches the agent to debug itself systematically before \n\nSkill: angular-developer\n# Angular Developer Guidelines\n\n## When to Activate\n\n- Working in any Angular project or codebase\n- Creating or scaffolding a new Angular project, application, or library\n- Generating components, services, directives, pipes, guards, or resolvers\n- Implementing reactivity with Angular Signals, `linke\n\nSkill: api-connector-builder\n# API Connector Builder\n\nUse this when the job is to add a repo-native integration surface, not just a generic HTTP client.\n\nThe point is to match the host repository's pattern:\n\n- connector layout\n- config schema\n- auth model\n- error handling\n- test style\n- registration/discovery wiring\n\n## When to\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "tdd-guide",
+      "status": "pending"
+    },
+    {
+      "id": "5af11087",
+      "desc": "Fișier: README.md\nCompletează cu titlu, descriere, instrucțiuni de instalare și utilizare\n\nSkill-uri relevante:\nSkill: agent-introspection-debugging\n# Agent Introspection Debugging\n\nUse this skill when an agent run is failing repeatedly, consuming tokens without progress, looping on the same tools, or drifting away from the intended task.\n\nThis is a workflow skill, not a hidden runtime. It teaches the agent to debug itself systematically before \n\nSkill: angular-developer\n# Angular Developer Guidelines\n\n## When to Activate\n\n- Working in any Angular project or codebase\n- Creating or scaffolding a new Angular project, application, or library\n- Generating components, services, directives, pipes, guards, or resolvers\n- Implementing reactivity with Angular Signals, `linke\n\nSkill: api-connector-builder\n# API Connector Builder\n\nUse this when the job is to add a repo-native integration surface, not just a generic HTTP client.\n\nThe point is to match the host repository's pattern:\n\n- connector layout\n- config schema\n- auth model\n- error handling\n- test style\n- registration/discovery wiring\n\n## When to\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "doc-updater",
+      "status": "pending"
+    },
+    {
+      "id": "63ad37cf",
+      "desc": "Fișier: .eslintrc.js\nCreează configurare standard ESLint\n\nSkill-uri relevante:\nSkill: coding-standards\n# Coding Standards & Best Practices\n\nBaseline coding conventions applicable across projects.\n\nThis skill is the shared floor, not the detailed framework playbook.\n\n- Use `frontend-patterns` for React, state, forms, rendering, and UI architecture.\n- Use `backend-patterns` or `api-design` for reposito\n\nSkill: cpp-coding-standards\n# C++ Coding Standards (C++ Core Guidelines)\n\nComprehensive coding standards for modern C++ (C++17/20/23) derived from the [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines). Enforces type safety, resource safety, immutability, and clarity.\n\n## When to Use\n\n- Writing\n\nSkill: java-coding-standards\n# Java Coding Standards\n\nStandards for readable, maintainable Java (17+) code in Spring Boot and Quarkus services.\n\n## When to Use\n\n- Writing or reviewing Java code in Spring Boot or Quarkus projects\n- Enforcing naming, immutability, or exception handling conventions\n- Working with records, sealed c\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "chief-of-staff",
+      "status": "pending"
+    },
+    {
+      "id": "0aa7fa90",
+      "desc": "Fișier: .prettierrc\nCreează configurare standard Prettier\n\nSkill-uri relevante:\nSkill: coding-standards\n# Coding Standards & Best Practices\n\nBaseline coding conventions applicable across projects.\n\nThis skill is the shared floor, not the detailed framework playbook.\n\n- Use `frontend-patterns` for React, state, forms, rendering, and UI architecture.\n- Use `backend-patterns` or `api-design` for reposito\n\nSkill: cpp-coding-standards\n# C++ Coding Standards (C++ Core Guidelines)\n\nComprehensive coding standards for modern C++ (C++17/20/23) derived from the [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines). Enforces type safety, resource safety, immutability, and clarity.\n\n## When to Use\n\n- Writing\n\nSkill: java-coding-standards\n# Java Coding Standards\n\nStandards for readable, maintainable Java (17+) code in Spring Boot and Quarkus services.\n\n## When to Use\n\n- Writing or reviewing Java code in Spring Boot or Quarkus projects\n- Enforcing naming, immutability, or exception handling conventions\n- Working with records, sealed c\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "chief-of-staff",
+      "status": "pending"
+    },
+    {
+      "id": "756877a8",
+      "desc": "Rulează npm run build și repară orice eroare până la succes\n\nSkill-uri relevante:\nSkill: angular-developer\n# Angular Developer Guidelines\n\n## When to Activate\n\n- Working in any Angular project or codebase\n- Creating or scaffolding a new Angular project, application, or library\n- Generating components, services, directives, pipes, guards, or resolvers\n- Implementing reactivity with Angular Signals, `linke\n\nSkill: api-connector-builder\n# API Connector Builder\n\nUse this when the job is to add a repo-native integration surface, not just a generic HTTP client.\n\nThe point is to match the host repository's pattern:\n\n- connector layout\n- config schema\n- auth model\n- error handling\n- test style\n- registration/discovery wiring\n\n## When to\n\nSkill: bun-runtime\n# Bun Runtime\n\nBun is a fast all-in-one JavaScript runtime and toolkit: runtime, package manager, bundler, and test runner.\n\n## When to Use\n\n- **Prefer Bun** for: new JS/TS projects, scripts where install/run speed matters, Vercel deployments with Bun runtime, and when you want a single toolchain (r\n\nReguli:\n---\npaths:\n  - \"**/*.component.ts\"\n  - \"**/*.component.html\"\n  - \"**/*.service.ts\"\n  - \"**/*.directive.ts\"\n  - \"**/*.pipe.ts\"\n  - \"**/*.guard.ts\"\n  - \"**/*.resolver.ts\"\n  - \"**/*.module.ts\"\n---\n# Angular Coding Style\n> This file extends [common/coding-style.md](../common/coding-style.md) with Angular specific content.\nAlways check the project's Angular version before writing code — features differ significantly between versions. Run `ng version` or inspect `package.json`. When creating a new project, do not pin a version unless the user specifies one.\n---\npaths:\n  - \"**/*.go\"\n  - \"**/go.mod\"\n  - \"**/go.sum\"\n---\n# Go Coding Style\n> This file extends [common/coding-style.md](../common/coding-style.md) with Go specific content.\n- **gofmt** and **goimports** are mandatory — no style debates\n\nIMPORTANT: Returnează fiecare fișier generat/modificat în formatul strict:\n### cale/relativă/la/fișier.ext\nconținutul complet al fișierului\n### END\nNu include explicații în afara blocurilor ###.\nFolosește DOAR căi relative la proiect, nu absolute.\n",
+      "agent": "react-build-resolver",
+      "status": "pending"
     }
   ],
   "plan": [],
   "status": "completed",
   "checkpoint": {
-    "step": 30,
+    "step": 22,
     "files": {
-      ".env.example": "8471b47d400b05ccbf637f0d4a0ffc95",
-      ".env.local": "e17b7cb9864b4af19ce5af33d8addcb6",
+      ".env.example": "db463e5a29dca7d3db962499ac68b3d6",
+      ".env.local": "695c7178be857ce381be82fd007e195f",
+      ".eslintrc.js": "48cd69f99900547420a765a19880bfc7",
       ".node-version": "98f13708210194c475687be6106a3b84",
+      ".prettierrc": "89ef83949e574991933bad93cc24887d",
+      "all_files.txt": "b8372a9c087c5b47a906f99c9c0d3301",
       "btn_output.txt": "a6a59e9b83b06719c8c32f1b6ee1c3c8",
+      "check_files.js": "f8f429181eeae812e662d851adca65a3",
       "errors.txt": "dca37a95af62812ef91171e8444ae0ec",
-      "generated.json": "e9de67ba993b99b988b8fa7df1006b37",
+      "file_sizes.txt": "3cb79e5bb5cf54d3232ef710967f42e5",
+      "generated.json": "89ef83949e574991933bad93cc24887d",
       "jest.config.ts": "6b828931b61bc4357fe915d2eeb16f24",
       "jest.setup.ts": "ab9720c1036a30ee6ba54967974ba898",
-      "next.config.js": "fcebd663628d6da36891f6f865342999",
+      "list_files.js": "e9751dae6983a6599b4f90bab8c2c9bc",
+      "list_files2.js": "8f368f2abb2ab5ca6c6f27de46b20ff8",
+      "next.config.js": "7dc31f7bf249a9b1c858b59a19ce8007",
+      "nexus-report.txt": "986bbfb64cb5928ecaa97807a098d119",
       "output.txt": "0951b6e5db324421313e4d933d129b34",
+      "package-lock.json": "eaaa9615b27fe27ac3253356db47ca81",
       "package.json": "e5516fa0423e55fc4ffff53b430600c5",
       "plan.md": "df680dee00c139e334ae2739375e24c3",
       "postcss.config.mjs": "da0b06fda8ccd9721975a6cd44e5f0c0",
-      "README.md": "fe60d50862e81e50aebc6bcdee1d44d8",
-      "state.json": "41fb4003c68fd3a45495c728f4872511",
+      "README.md": "6670cacc9a0661b01cb3b78cecbd39d4",
+      "state.json": "e31ce388d748a476f101415c2d697273",
       "tailwind.config.ts": "a9bf9adf0b81aecf12c0d79f68e843fb",
       "test_output.txt": "7022f8f0a2cc54e9e3226d54c23cdf1b",
-      "tsconfig.json": "940c40cd294de96c3f29efd5f28dac7c",
+      "tsconfig.json": "e1c603bdaf28dc133832f0c18f07e567",
       "verificare_finala.txt": "26ac2dcd1c7efbdbcf6185c4eed62bc9",
       "prisma\\schema.prisma": "a5d0bb2ecf303503fc385ae9a48b4ae1",
       "public\\favicon.ico": "5a0eb91f7bb7ffe30477cd469de70bba",
       "public\\manifest.json": "fe4299ba9bf5f0a37ee9b48badddbc15",
       "public\\sw.js": "049a7d7d4d7141f0c5bc1d0d88750976",
       "src\\middleware.ts": "32806528e39df1a92b678c1d327b8f20",
-      "src\\app\\error.tsx": "12f5737c859658e93b3ba67d857a7553",
+      "src\\app\\error.tsx": "db18e6482ac433693d3e823c3789931e",
       "src\\app\\globals.css": "98d00968f220c7b6b1fde0794c1ec598",
       "src\\app\\layout.tsx": "11152b90af76811723db74e74ef71ccb",
       "src\\app\\loading.tsx": "66c03c7bc873d2efb96178f0d46baaa1",
       "src\\app\\manifest.ts": "48e9733e65fc472d0a6a3940c5562007",
-      "src\\app\\not-found.tsx": "c443998692487263f7765b4fc04ddaa0",
+      "src\\app\\not-found.tsx": "2367cf9dd860aa29279916414ee9714a",
       "src\\app\\page.tsx": "db90b720d3b8d9c34b3610a017ca45e3",
       "src\\app\\robots.ts": "a0e28026a1cba282f414c9d667a105b1",
       "src\\app\\sitemap.ts": "3158806875254abb9401ad93e1139a46",
       "src\\app\\(admin)\\dashboard\\page.tsx": "04daba7882935ac08ea2527e5e05484a",
       "src\\app\\(admin)\\login\\page.tsx": "3664c812ce4c1e9c1f94678258a10cc8",
       "src\\app\\(auth)\\forgot-password\\page.tsx": "6849e8322959985a096f46c922d8794c",
-      "src\\app\\(auth)\\register\\page.tsx": "a9aacff3f96e0e0ba008c2b8e8d2812c",
+      "src\\app\\(auth)\\register\\page.tsx": "b4ec7064a1f8f2781816164e9b650739",
       "src\\app\\(auth)\\verify-email\\page.tsx": "ea6bd30f51d5e27df2bef005a4b209d7",
       "src\\app\\api\\auth\\route_temp.ts": "1b4a49b8db8965bd5f7fb5027f24bbb3",
       "src\\app\\api\\auth\\register\\route.ts": "fbc11be12bad8323b63d803ba599a8f4",
       "src\\app\\api\\auth\\verify-email\\route.ts": "b00c4f1a0699a7abc2eee7062d8375e4",
       "src\\app\\api\\auth\\[...nextauth]\\route.ts": "df4cefb18462372bcd1adb651a72e84c",
+      "src\\app\\api\\contact\\route.ts": "81565d1ff79d28b5ca658ff6ef56c634",
       "src\\app\\api\\settings\\route.ts": "ab415eb3e7cde4f6ad64420d4ddbde6b",
       "src\\components\\layout\\DashboardLayout.tsx": "3f9787798c660e38d2cb1d79b709a513",
-      "src\\components\\layout\\Footer.tsx": "a670213b4d4effabfaf8dccd814a4e98",
+      "src\\components\\layout\\Footer.tsx": "0b63b83a8861dd37d6fafd0e71c1a8b4",
       "src\\components\\layout\\Header.tsx": "6fe6af39c7efdfbb17859140fbed04ee",
       "src\\components\\layout\\LandingLayout.tsx": "d19dacd9ad677b2d524b68ab084c2ec0",
-      "src\\components\\layout\\Sidebar.tsx": "e90f983a8c26363efd62fc1d71d2eac2",
+      "src\\components\\layout\\Sidebar.tsx": "41dd6e8d016d5e30bf31d2ed46c8dec7",
+      "src\\components\\shared\\ui\\heading.tsx": "8d744f29c983c372d1402e731a5c5610",
+      "src\\components\\shared\\ui\\text-styles.tsx": "8f915bce8de2331cc5bbda8f475af415",
       "src\\components\\ui\\Avatar.tsx": "70c9e078b918e070d011a3203b6df30d",
       "src\\components\\ui\\Badge.tsx": "349827539eb1c59225cc66436a913ba5",
       "src\\components\\ui\\Breadcrumbs.tsx": "8b094bb7bf57916e0a8ad5c680cee846",
@@ -1431,6 +1615,7 @@
       "src\\components\\ui\\Tooltip.tsx": "ff6dac2dfebe9396e36c4fe2763b5860",
       "src\\components\\ui\\TreeView.tsx": "ccfe95dbeaef8ead34302f4d53c460f8",
       "src\\hooks\\useAuth.ts": "c9b06083406bd4146d9b7cea4c8c2307",
+      "src\\hooks\\useMediaQuery.ts": "fd62b8fe1d20833479ae289be8b78064",
       "src\\lib\\api-response.ts": "393bb0905f3c1719d0870fa9baa1ad82",
       "src\\lib\\audit.ts": "43f5d53fdd52d6b5db99c175bd5500e4",
       "src\\lib\\cn.ts": "f91f45c7c1eccdb72f4beab78e67676b",
@@ -1479,5 +1664,5 @@
     }
   },
   "modified_files": {},
-  "updated": 1783197082.514105
+  "updated": 1783219609.9808187
 }

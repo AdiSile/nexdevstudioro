@@ -1,0 +1,17 @@
+{
+  "/(admin)/login/page": "app/(admin)/login/page.js",
+  "/(auth)/register/page": "app/(auth)/register/page.js",
+  "/(auth)/forgot-password/page": "app/(auth)/forgot-password/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/api/auth/register/route": "app/api/auth/register/route.js",
+  "/(auth)/verify-email/page": "app/(auth)/verify-email/page.js",
+  "/api/auth/verify-email/route": "app/api/auth/verify-email/route.js",
+  "/(admin)/dashboard/page": "app/(admin)/dashboard/page.js",
+  "/api/contact/route": "app/api/contact/route.js",
+  "/api/settings/route": "app/api/settings/route.js",
+  "/robots.txt/route": "app/robots.txt/route.js",
+  "/sitemap.xml/route": "app/sitemap.xml/route.js",
+  "/page": "app/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/manifest.webmanifest/route": "app/manifest.webmanifest/route.js"
+}
