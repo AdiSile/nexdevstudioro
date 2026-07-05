@@ -1,6 +1,6 @@
 {
-  "action": "file_reader",
+  "action": "shell_exec",
   "action_input": {
-    "file_path": "src/app/(admin)/dashboard/page.tsx"
+    "command": "ls -la /home/user/agent_deployment/NexusDevStudioRo/src/providers/ 2>/dev/null || echo \"Directory does not exist\""
   }
 }

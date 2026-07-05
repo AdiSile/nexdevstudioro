@@ -1,73 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
+    "target": "ES2020",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "strict": true,
-    "noEmit": true,
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "forceConsistentCasingInFileNames": true,
-    "noUncheckedIndexedAccess": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "exactOptionalPropertyTypes": false,
-    "baseUrl": ".",
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "paths": {
-      "@/*": ["./src/*"],
-
-      "@/core/*": ["./src/core/*"],
-      "@/cms/*": ["./src/cms/*"],
-      "@/shop/*": ["./src/shop/*"],
-      "@/ai/*": ["./src/ai/*"],
-      "@/events/*": ["./src/events/*"],
-      "@/blog/*": ["./src/blog/*"],
-      "@/payments/*": ["./src/payments/*"],
-      "@/automation/*": ["./src/automation/*"],
-      "@/communication/*": ["./src/communication/*"],
-      "@/analytics/*": ["./src/analytics/*"],
-      "@/admin/*": ["./src/admin/*"],
-      "@/search/*": ["./src/search/*"],
-      "@/files/*": ["./src/files/*"],
-      "@/seo/*": ["./src/seo/*"],
-      "@/integrations/*": ["./src/integrations/*"],
-      "@/system/*": ["./src/system/*"],
-      "@/design/*": ["./src/design/*"],
-
-      "@/lib/*": ["./src/lib/*"],
-      "@/hooks/*": ["./src/hooks/*"],
-      "@/providers/*": ["./src/providers/*"],
-      "@/services/*": ["./src/services/*"],
-      "@/components/*": ["./src/components/*"],
-      "@/styles/*": ["./src/styles/*"],
-      "@/types/*": ["./src/types/*"],
-      "@/utils/*": ["./src/utils/*"],
-      "@/config/*": ["./src/config/*"],
-      "@/tests/*": ["./src/__tests__/*"]
-    }
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    ".next",
-    "coverage"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["src/app/app.component.ts", "src/app/app.component.html"]
 }

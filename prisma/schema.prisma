@@ -33,6 +33,7 @@ model User {
   notifications    Notification[]
   activityLogs     ActivityLog[]
   reportGenerated  Report[]
+  productReviews   ProductReview[]
 
   @@map("users")
 }
@@ -422,4 +423,19 @@ model BlogCategory {
   posts BlogPost[]  @relation("BlogPostCategory")
 
   @@map("blog_categories")
+}
+
+model ProductReview {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  productId String   @map("product_id")
+  rating    Int
+  comment   String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_reviews")
 }
